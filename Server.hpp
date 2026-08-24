@@ -10,8 +10,18 @@
 #include <arpa/inet.h>
 #include <poll.h>
 #include <csignal>
+#include <map>
+
+class User;
 
 class Server{
 	private:
-		
+		std::map<int, User> dict; // fds, user
+		std::string password;
+		int port;
+	public:
+		Server();
+		~Server();
+		Server(Server const &src);
+		Server &operator=(Server const &src);
 }

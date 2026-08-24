@@ -5,11 +5,21 @@
 class User{
 	private: 
 		int fd;
-		std::string IPaddress;
+		bool registered;
+		bool isadmin;
+		bool isloggedin;
+		std::string ipadd;
+		std::string username;
+		std::string nickname;
     public:
-		Client(){};
-		int GetFd(){return Fd;}
-
-		void SetFd(int fd){Fd = fd;}
-		void setIpAdd(std::string ipadd){IPadd = ipadd;}
-}
+		User();
+		User(std::string nickname, std::string username);
+		~User();
+		User(User const &src);
+		User &operator=(User const &src);
+		std::string GetNickName();
+		std::string GetUserName();
+		bool 		GetLogedIn();
+		std::string getIpAdd();
+		
+};
