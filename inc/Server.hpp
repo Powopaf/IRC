@@ -18,7 +18,9 @@
 # include <sstream>
 # include <ctime>
 # include <csignal>
+# include "User.hpp"
 
+class User;
 
 class Server {
 private:
@@ -29,15 +31,18 @@ private:
 	struct sockaddr_in 						_serverAddress;
 	std::string 							_hostname;
 	std::vector<struct pollfd> 				_pollFds; // -> active socket list
-	// std::vector<Client *> 					_clients; 
+	std::vector<User *> 					_users; 
 	// std::vector<Channel *>					_channels; 
 public:
 	Server(int port, std::string password);
 	~Server(void);
 	void 									shutdown(void);
 
-	/* Main loop */
+	// Main loop
 	void 									startServ(void);
+
+	// Events
+	void 									handleNewConnection(void);
 };
 
 #endif

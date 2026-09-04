@@ -16,9 +16,9 @@ void Server::startServ(void) {
 		for (std::size_t i = 0; i < _pollFds.size(); ++i) {
 			if (_pollFds[i].revents & POLLIN) {
 				if (_pollFds[i].fd == _serverFd)
-					// handleNewConnection();
+					handleNewConnection();
 				else
-					// _handleMessage(i); (using the fd index, but use whatever method you want)
+					// handleMessage(i); (using the fd index, but use whatever method you want)
 			}
 		}
 	}
