@@ -1,3 +1,6 @@
+#include "handle_message.hpp"
+
+
 /*
 IRC msg:
 
@@ -9,3 +12,8 @@ command are upper letter or 3 digits
 we don't care about prefix
 :trailing the last param can contain space
 */
+
+
+void handle_message(const std::string& msg) {
+    
+}
