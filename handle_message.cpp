@@ -2,6 +2,7 @@
 #include <cctype>
 #include <cstddef>
 #include <stdexcept>
+#include <vector>
 
 
 /*
@@ -19,27 +20,33 @@ we don't care about prefix
 static std::string extract_cmd(std::string msg, size_t i) {
     std::string cmd;
     size_t j = 0;
-    if (std::isdigit(msg[i])) {
-        while (std::isdigit(msg[i])) {
-            cmd[j] = msg[i];
-            j++; i++;
-        }
-        if (j != 3)
-            throw std::invalid_argument("The command is invalid" + msg);
+    while (std::isupper(msg[i])) {
+        cmd[j] = msg[i];
+        i++; j++;
     }
-    else {
-        while (std::isupper(msg[i])) {
-            cmd[j] = msg[i];
+    if (msg[i] != ' ')
+        throw std::invalid_argument("The command is invalid" + msg);
+    return cmd;
+}
+
+static std::vector<std::string> extract_args(std::string msg, size_t i) {
+    std::vector<std::string> args;
+    while (msg[i] != '\r') {
+        size_t j = 0;
+        std::string a;
+        while (msg[i] != ' ') {
+            a[j] = msg[i];
             i++; j++;
         }
-        if (msg[i] != ' ')
-            throw std::invalid_argument("The command is invalid" + msg);
+        args.push_back(a);
+        i++;
     }
-    return cmd;
+    return args;
 }
 
 void handle_message(const std::string& msg) {
     std::string cmd;
+    std::vector<std::string> args;
     size_t i = 0;
     if (msg.size() > 512)
         throw std::length_error("Message is too long");
@@ -51,4 +58,5 @@ void handle_message(const std::string& msg) {
     }
     i++;
     cmd = extract_cmd(msg, i);
+    args = extract_args(msg, i);
 }
