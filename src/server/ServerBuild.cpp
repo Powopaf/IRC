@@ -1,4 +1,6 @@
 #include "../../inc/Server.hpp"
+#include <iostream>
+#include <stdexcept>
 
 Server::Server(int port, std::string password) : _port(port), _password(password) {
 	_serverFd = socket(AF_INET, SOCK_STREAM, 0);

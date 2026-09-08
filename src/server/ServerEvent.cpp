@@ -1,4 +1,5 @@
 #include "../../inc/Server.hpp"
+#include <iostream>
 
 void Server::handleNewConnection(void) {
 	struct sockaddr_in user_addr;
