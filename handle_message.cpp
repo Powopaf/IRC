@@ -2,13 +2,14 @@
 #include <cctype>
 #include <cstddef>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 
 /*
 IRC msg:
 
-[:prefix] <command> <param> 	[:trailing]\r\n
+[:prefix] <command> <param> [:trailing]\r\n
 
 must not have a size > 512
 up to 15 param
@@ -44,9 +45,7 @@ static std::vector<std::string> extract_args(std::string msg, size_t i) {
     return args;
 }
 
-void handle_message(const std::string& msg) {
-    std::string cmd;
-    std::vector<std::string> args;
+void handle_message(const std::string& msg, std::string cmd, std::vector<std::string> args) {
     size_t i = 0;
     if (msg.size() > 512)
         throw std::length_error("Message is too long");
