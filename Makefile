@@ -4,6 +4,10 @@ NAME = ircserv
 LIBS =
 
 SRC = ./main.cpp \
+	  ./src/server/Server.cpp \
+	  ./src/server/ServerBuild.cpp \
+	  ./src/server/ServerEvent.cpp
+	  
 
 OBJ = $(addprefix .obj/,$(SRC:.cpp=.o))
 DEP = $(addprefix .obj/,$(SRC:.cpp=.d))
