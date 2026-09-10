@@ -12,7 +12,7 @@ class User{
 		std::string			_username;
 		std::string			_ipv4_addr;
 		std::string			_buffer;
-    public:
+	public:
 		User() : _isadmin(false), _isloggedin(false) {}
 		~User() {}
 

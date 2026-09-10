@@ -1,15 +1,11 @@
 #ifndef _server_hpp_
-# define _server_hpp_
+#define _server_hpp_
 
-# include <vector>
-# include <string>
-# include <unistd.h>
-# include <netinet/in.h>
-# include <sys/socket.h>
-# include <arpa/inet.h>
-# include <poll.h>
-# include <fcntl.h>
-# include "User.hpp"
+#include <vector>
+#include <string>
+#include <netinet/in.h>
+#include <map>
+#include "User.hpp"
 
 class Server {
 private:
@@ -20,7 +16,7 @@ private:
 	struct sockaddr_in 			_serverAddress;
 	std::string 				_hostname;
 	std::vector<struct pollfd>	_pollFds; // -> active socket list
-	std::vector<User *> 		_users; 
+	std::map<int, User> 		_users; 
 	// std::vector<Channel *>	_channels; 
 public:
 	Server(int port, std::string password);

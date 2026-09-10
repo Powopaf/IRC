@@ -1,5 +1,8 @@
 #include "../../inc/Server.hpp"
+#include <arpa/inet.h>
 #include <iostream>
+#include <utility>
+#include <poll.h>
 
 void Server::handleNewConnection(void) {
 	struct sockaddr_in user_addr;
@@ -18,9 +21,9 @@ void Server::handleNewConnection(void) {
 	user_pollfd.events = POLLIN;
 	user_pollfd.revents = 0;
 
-	_users.push_back(new User());
-	_users.back()->setFd(user_fd);
-	_users.back()->setHostname(inet_ntoa(user_addr.sin_addr));
+	_users.insert(std::make_pair(user_fd, User()));
+	_users[user_fd].setFd(user_fd);
+	_users[user_fd].setHostname(inet_ntoa(user_addr.sin_addr));
 	_pollFds.push_back(user_pollfd);
 
 	std::cout << " NEW user CONNECTED, user fd: " << user_fd << std::endl;

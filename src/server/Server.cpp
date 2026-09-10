@@ -1,6 +1,10 @@
 #include "../../inc/Server.hpp"
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <vector>
 #include <stdexcept>
+#include <poll.h>
 
 
 // Main server loop. Calls poll() on all registered sockets and handles:
@@ -17,11 +21,19 @@ void Server::startServ(void) {
 		}
 		for (std::size_t i = 0; i < _pollFds.size(); ++i) {
 			if (_pollFds[i].revents & POLLIN) {
-				if (_pollFds[i].fd == _serverFd)
+				int fd = _pollFds[i].fd;
+				if (fd == _serverFd)
 					handleNewConnection();
 				else {
-					std::string cmd;
-					std::vector<std::string> args;
+					char buffer[512];
+					ssize_t n = recv(fd, buffer, sizeof(buffer), 0);
+					if (n > 0) {
+						_users[fd].setBuf(std::string(buffer, n));
+						// check if the user buffer contain "\r\n" and exec the cmd if yes
+					}
+					else if (n <= 0) {
+						// close connection
+					}
 				}
 			}
 		}
