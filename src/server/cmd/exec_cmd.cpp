@@ -1,4 +1,4 @@
-#include "../../../inc/Server.hpp"
+#include "../../../inc/server/Server.hpp"
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -7,7 +7,7 @@ static std::string extract_cmd(const std::string& msg, size_t i) {
 	std::string cmd;
 	size_t j = 0;
 	while (std::isupper(msg[i])) {
-		cmd[j] = msg[i];
+		cmd += msg[i];
 		i++; j++;
 	}
 	if (msg[i] != ' ')
@@ -31,7 +31,21 @@ static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 }
 
 static void exec_msg(const std::string& cmd, std::vector<std::string> args) {
+	if (cmd == "KICK") {
 
+	}
+	else if (cmd == "INVITE") {
+	
+	}
+	else if (cmd == "TOPIC") {
+	
+	}
+	else if (cmd == "MODE") {
+	
+	}
+	else {
+		throw std::invalid_argument("Command does not exist");
+	}
 }
 
 void Server::handleMessage() {
@@ -50,4 +64,5 @@ void Server::handleMessage() {
 	i++;
 	std::string cmd = extract_cmd(msg, i);
 	std::vector<std::string> args = extract_args(msg, i);
+	exec_msg(cmd, args);
 }

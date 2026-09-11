@@ -5,7 +5,7 @@
 #include <string>
 #include <netinet/in.h>
 #include <map>
-#include "User.hpp"
+#include "../user/User.hpp"
 
 class Server {
 private:

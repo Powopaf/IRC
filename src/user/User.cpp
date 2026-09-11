@@ -1,4 +1,4 @@
-#include "../../inc/User.hpp"
+#include "../../inc/user/User.hpp"
 #include <cstddef>
 
 bool User::hasCmd() {
