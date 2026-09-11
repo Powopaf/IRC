@@ -1,4 +1,5 @@
 #include "../../../inc/server/Server.hpp"
+#include "../../../inc/server/cmd/cmd.hpp"
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -32,16 +33,16 @@ static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 
 static void exec_msg(const std::string& cmd, std::vector<std::string> args) {
 	if (cmd == "KICK") {
-
+		kick(args);
 	}
 	else if (cmd == "INVITE") {
-	
+		invite(args);
 	}
 	else if (cmd == "TOPIC") {
-	
+		topic(args);
 	}
 	else if (cmd == "MODE") {
-	
+		mode(args);
 	}
 	else {
 		throw std::invalid_argument("Command does not exist");
