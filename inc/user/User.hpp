@@ -16,6 +16,9 @@ class User{
 		User() : _isadmin(false), _isloggedin(false) {}
 		~User() {}
 
+		bool				hasCmd();
+		std::string			getCmd(); // test with hasCmd before using this unknow behavior else
+
 		//getters
 		const std::string&	getBuf(void) const { return _buffer; }
 		const std::string&	getHostname(void) const { return (_ipv4_addr); }
