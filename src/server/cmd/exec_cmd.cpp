@@ -37,7 +37,7 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args) {
 void Server::handleMessage() {
 	if (!_users[uf].hasCmd())
 		return;
-	const std::string& msg = _users[uf].getBuf();
+	const std::string& msg = _users[uf].getCmd();
 	size_t i = 0;
 	if (msg.size() > 512)
 		throw std::length_error("Message is too long");
