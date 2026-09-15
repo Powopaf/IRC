@@ -1,9 +1,9 @@
 #include "../../inc/server/Server.hpp"
-#include <iostream>
-#include <stdexcept>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <poll.h>
+// #include <iostream>
+// #include <stdexcept>
+// #include <arpa/inet.h>
+// #include <unistd.h>
+// #include <poll.h>
 
 Server::Server(int port, std::string password) : _port(port), _password(password) {
 	_serverFd = socket(AF_INET, SOCK_STREAM, 0);

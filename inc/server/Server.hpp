@@ -5,7 +5,21 @@
 #include <string>
 #include <netinet/in.h>
 #include <map>
+#include <iostream>
+#include <exception>
+#include <ostream>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <poll.h>
+#include <stdexcept>
+#include <arpa/inet.h>
+#include <utility>
+#include <csignal>
+#include <cstdlib>
+#include <cstdio>
 #include "../user/User.hpp"
+#include "./cmd/cmd.hpp"
 
 class Server {
 private:
