@@ -8,12 +8,14 @@
 class Channel {
 	private:
 		std::string _name;
-		std::vector<User> _members;
+		std::vector<User *> _members;
 	public:
 	Channel();
 	~Channel() {}
 	Channel(const Channel& copy);
 	Channel& operator=(const Channel& other);
+
+	void addUser(User& user);
 
 };
 
