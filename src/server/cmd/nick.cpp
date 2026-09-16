@@ -1,5 +1,5 @@
-#include "../../../inc/server/cmd/cmd.hpp"
+#include "../../../inc/server/Server.hpp"
 
-void nick(std::vector<std::string> args) {
-	
+void Server::nick(std::vector<std::string> args) {
+
 }

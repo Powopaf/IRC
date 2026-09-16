@@ -1,5 +1,5 @@
-#include "../../../inc/server/cmd/cmd.hpp"
+#include "../../../inc/server/Server.hpp"
 
-void mode(std::vector<std::string> args) {
+void Server::mode(std::vector<std::string> args) {
 	
 }

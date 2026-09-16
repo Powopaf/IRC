@@ -1,5 +1,4 @@
 #include "../../../inc/server/Server.hpp"
-#include "../../../inc/server/cmd/cmd.hpp"
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -31,21 +30,21 @@ static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 	return args;
 }
 
-static void exec_msg(const std::string& cmd, std::vector<std::string> args) {
+static void exec_msg(const std::string& cmd, std::vector<std::string> args, Server& serv) {
 	if (cmd == "KICK")
-		kick(args);
+		serv.kick(args);
 	else if (cmd == "INVITE")
-		invite(args);
+		serv.invite(args);
 	else if (cmd == "TOPIC")
-		topic(args);
+		serv.topic(args);
 	else if (cmd == "MODE")
-		mode(args);
+		serv.mode(args);
 	else if (cmd == "JOIN")
-		join(args);
+		serv.join(args);
 	else if (cmd == "NICK")
-		nick(args);
+		serv.nick(args);
 	else if (cmd == "PRIVMSG")
-		privmsg(args);
+		serv.privmsg(args);
 	else
 		throw std::invalid_argument("Command does not exist");
 }
@@ -66,5 +65,5 @@ void Server::handleMessage() {
 	i++;
 	std::string cmd = extract_cmd(msg, i);
 	std::vector<std::string> args = extract_args(msg, i);
-	exec_msg(cmd, args);
+	exec_msg(cmd, args, *this);
 }
