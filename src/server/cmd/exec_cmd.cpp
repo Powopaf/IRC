@@ -32,11 +32,14 @@ static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 	return args;
 }
 
-static void exec_msg(const std::string& cmd, std::vector<std::string> args) {
-	if (cmd == "KICK") {
-		std::cout << "hi!" << std::endl;// kick(args);
+void Server::exec_msg(const std::string& cmd, std::vector<std::string> args) {
+	if (cmd == "PASS")
+	{
+		std::cout << args[0] << std::endl;
 	}
-	(void)args;
+	// if (cmd == "KICK") {
+	// 	kick(args);
+	// }
 	// else if (cmd == "INVITE") {
 	// 	invite(args);
 	// }
@@ -70,5 +73,7 @@ void Server::handleMessage() {
 	std::cout << "cmd is: " << cmd << std::endl;
 	std::vector<std::string> args = extract_args(msg, i);
 	std::cout << "Received data from fd " << uf << ": " << msg << std::endl;
+	if (cmd.empty())
+		throw std::length_error("cmd is empty");
 	exec_msg(cmd, args);
 }

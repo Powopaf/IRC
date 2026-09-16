@@ -23,6 +23,7 @@
 
 class Server {
 private:
+	// CmdHandler					_commandHandler;
 
 	int							_port;
 	int							uf;
@@ -42,7 +43,10 @@ public:
 	void						startServ(void);
 	// Events
 	void						handleNewConnection(void);
+	void 						handleDisconnection();
+	void						_rmClient();
 	void						handleMessage();
+	void						exec_msg(const std::string& cmd, std::vector<std::string> args); 
 };
 
 #endif

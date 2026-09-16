@@ -26,5 +26,21 @@ void Server::handleNewConnection(void) {
 	_users[user_fd].setHostname(inet_ntoa(user_addr.sin_addr));
 	_pollFds.push_back(user_pollfd);
 
-	std::cout << " NEW user CONNECTED, user fd: " << user_fd << std::endl;
+	std::cout << "NEW user CONNECTED, user fd: " << user_fd << std::endl;
+}
+
+void Server::handleDisconnection(void){
+	_rmClient();
+	close(uf);
+	std::cout << "CLIENT DISCONNECTED, client fd: " << uf << std::endl;
+}
+
+void Server::_rmClient() {
+	for (std::size_t i = 0; i < _pollFds.size(); ++i) {
+		if (_pollFds[i].fd == uf) {
+			_pollFds.erase(_pollFds.begin() + i);
+			break;
+			}
+		}
+	_users.erase(uf);
 }
