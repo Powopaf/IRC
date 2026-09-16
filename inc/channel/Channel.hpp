@@ -8,7 +8,12 @@
 class Channel {
 	private:
 		std::string _name;
+		std::string _topic;
 		std::vector<User *> _members;
+		std::string _key;
+		bool _inviteOnly;
+		bool _topicRestricted;
+		unsigned int _usersLimit;
 	public:
 	Channel();
 	~Channel() {}

@@ -32,21 +32,22 @@ static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 }
 
 static void exec_msg(const std::string& cmd, std::vector<std::string> args) {
-	if (cmd == "KICK") {
+	if (cmd == "KICK")
 		kick(args);
-	}
-	else if (cmd == "INVITE") {
+	else if (cmd == "INVITE")
 		invite(args);
-	}
-	else if (cmd == "TOPIC") {
+	else if (cmd == "TOPIC")
 		topic(args);
-	}
-	else if (cmd == "MODE") {
+	else if (cmd == "MODE")
 		mode(args);
-	}
-	else {
+	else if (cmd == "JOIN")
+		join(args);
+	else if (cmd == "NICK")
+		nick(args);
+	else if (cmd == "PRIVMSG")
+		privmsg(args);
+	else
 		throw std::invalid_argument("Command does not exist");
-	}
 }
 
 void Server::handleMessage() {
