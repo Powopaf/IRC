@@ -1,12 +1,12 @@
 #include "../../inc/server/Server.hpp"
-#include <exception>
-#include <iostream>
-#include <ostream>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <vector>
-#include <poll.h>
+// #include <exception>
+// #include <iostream>
+// #include <ostream>
+// #include <sys/socket.h>
+// #include <sys/types.h>
+// #include <unistd.h>
+// #include <vector>
+// #include <poll.h>
 
 
 // Main server loop. Calls poll() on all registered sockets and handles:
@@ -38,7 +38,8 @@ void Server::startServ(void) {
 						}
 					}
 					else if (n <= 0) {
-						// close connection
+						handleDisconnection();
+						// return;
 					}
 				}
 			}

@@ -1,6 +1,6 @@
 #include "../inc/server/Server.hpp"
-#include <iostream>
-#include <csignal>
+// #include <iostream>
+// #include <csignal>
 
 Server* g_server = NULL; // -> global instance ptr for setting up signals
 

@@ -5,10 +5,25 @@
 #include <string>
 #include <netinet/in.h>
 #include <map>
+#include <iostream>
+#include <exception>
+#include <ostream>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <poll.h>
+#include <stdexcept>
+#include <arpa/inet.h>
+#include <utility>
+#include <csignal>
+#include <cstdlib>
+#include <cstdio>
 #include "../user/User.hpp"
+#include "./cmd/cmd.hpp"
 
 class Server {
 private:
+	// CmdHandler					_commandHandler;
 
 	int							_port;
 	int							uf;
@@ -28,7 +43,16 @@ public:
 	void						startServ(void);
 	// Events
 	void						handleNewConnection(void);
+	void 						handleDisconnection();
+	void						_rmClient();
 	void						handleMessage();
-};
+	void						sendResponse(std::string response);
+	//Executing
+	void						exec_msg(const std::string& cmd, std::vector<std::string> args);
+	void						handlePasswordAuth(std::vector<std::string> args); 
+	void						handleNick(std::vector<std::string> args);
+	void						handleUserName(std::vector<std::string> args);
+	void						registerAttempt();
+};	
 
 #endif

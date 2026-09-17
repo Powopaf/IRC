@@ -1,0 +1,40 @@
+CC = c++
+CFLAGS =  -Wall -Wextra -Werror -MMD -MP -std=c++98
+NAME = ircserv
+LIBS =
+
+SRC = ./main.cpp \
+	  ./src/server/Server.cpp \
+	  ./src/server/ServerBuild.cpp \
+	  ./src/server/ServerEvent.cpp \
+	  ./src/user/User.cpp \
+	  ./src/server/cmd/exec_cmd.cpp \
+	  ./src/server/cmd/invite.cpp \
+	  ./src/server/cmd/kick.cpp \
+	  ./src/server/cmd/mode.cpp \
+	  ./src/server/cmd/topic.cpp
+	  
+
+OBJ = $(addprefix .obj/,$(SRC:.cpp=.o))
+DEP = $(addprefix .obj/,$(SRC:.cpp=.d))
+
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	$(CC) -o $(NAME) $+ $(LIBS)
+
+.obj/%.o: %.cpp
+	@mkdir -p .obj
+	$(CC) $(CFLAGS) -c $< -o $@
+
+-include $(DEP)
+
+clean:
+	rm -rf .obj
+
+fclean: clean
+	rm -f $(NAME)
+
+re: fclean all
+
+.PHONY: all clean fclean re
