@@ -32,20 +32,30 @@ static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 }
 
 static void exec_msg(const std::string& cmd, std::vector<std::string> args, Server& serv) {
-	if (cmd == "KICK")
-		serv.kick(args);
-	else if (cmd == "INVITE")
-		serv.invite(args);
-	else if (cmd == "TOPIC")
-		serv.topic(args);
-	else if (cmd == "MODE")
-		serv.mode(args);
-	else if (cmd == "JOIN")
-		serv.join(args);
-	else if (cmd == "NICK")
-		serv.nick(args);
-	else if (cmd == "PRIVMSG")
-		serv.privmsg(args);
+	if(!serv.getUsers()[serv._getUF()].getLogged()) {
+		if (cmd == "PASS")
+			serv.handlePasswordAuth(args);
+		else if (cmd == "NICK")
+			serv.handleNick(args);
+		else if (cmd == "USER")
+			serv.handleUserName(args);
+		else
+			serv.sendResponse("Error: Cant send commands other than PASS, NICK and USER; you have not yet registered\r\n");
+		serv.registerAttempt();
+	}
+	else
+		if (cmd == "KICK")
+			serv.kick(args);
+		else if (cmd == "INVITE")
+			serv.invite(args);
+		else if (cmd == "TOPIC")
+			serv.topic(args);
+		else if (cmd == "MODE")
+			serv.mode(args);
+		else if (cmd == "JOIN")
+			serv.join(args);
+		else if (cmd == "PRIVMSG")
+			serv.privmsg(args);
 	else
 		throw std::invalid_argument("Command does not exist");
 }
