@@ -1,5 +1,5 @@
-#include "../../../inc/server/cmd/cmd.hpp"
+#include "../../../inc/server/Server.hpp"
 
-void invite(std::vector<std::string> args) {
+void Server::invite(std::vector<std::string> args) {
 	(void)args;
 }

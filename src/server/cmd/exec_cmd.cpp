@@ -1,5 +1,4 @@
 #include "../../../inc/server/Server.hpp"
-#include "../../../inc/server/cmd/cmd.hpp"
 // #include <stdexcept>
 // #include <string>
 // #include <vector>
@@ -32,42 +31,29 @@ static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 	return args;
 }
 
-void Server::exec_msg(const std::string& cmd, std::vector<std::string> args) {
-	if(!_users[uf].getLogged()) {
-		if (cmd == "PASS")
-			handlePasswordAuth(args);
-		else if (cmd == "NICK")
-			handleNick(args);
-		else if (cmd == "USER")
-			handleUserName(args);
-		else
-			sendResponse("Error: Cant send commands other than PASS, NICK and USER; you have not yet registered");
-		registerAttempt();
-	}
+static void exec_msg(const std::string& cmd, std::vector<std::string> args, Server& serv) {
+	if (cmd == "KICK")
+		serv.kick(args);
+	else if (cmd == "INVITE")
+		serv.invite(args);
+	else if (cmd == "TOPIC")
+		serv.topic(args);
+	else if (cmd == "MODE")
+		serv.mode(args);
+	else if (cmd == "JOIN")
+		serv.join(args);
+	else if (cmd == "NICK")
+		serv.nick(args);
+	else if (cmd == "PRIVMSG")
+		serv.privmsg(args);
 	else
-		sendResponse("Youre already logged in");
-	// if (cmd == "KICK") {
-	// 	kick(args);
-	// }
-	// else if (cmd == "INVITE") {
-	// 	invite(args);
-	// }
-	// else if (cmd == "TOPIC") {
-	// 	topic(args);
-	// }
-	// else if (cmd == "MODE") {
-	// 	mode(args);
-	// }
-	// else {
-	// 	throw std::invalid_argument("Command does not exist");
-	// }
+		throw std::invalid_argument("Command does not exist");
 }
 
 void Server::handleMessage() {
 	if (!_users[uf].hasCmd())
 		return;
 	const std::string& msg = _users[uf].getCmd();
-	
 	size_t i = 0;
 	if (msg.size() > 512)
 		throw std::length_error("Message is too long");
@@ -84,5 +70,5 @@ void Server::handleMessage() {
 	std::cout << "Received data from fd " << uf << ": " << msg << std::endl;
 	if (cmd.empty())
 		throw std::length_error("cmd is empty");
-	exec_msg(cmd, args);
+	exec_msg(cmd, args, *this);
 }
