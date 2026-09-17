@@ -10,6 +10,7 @@ class Channel {
 		std::string _name;
 		std::string _topic;
 		std::vector<User *> _members;
+		std::vector<User *> _operators;
 		std::string _key;
 		bool _inviteOnly;
 		bool _topicRestricted;
