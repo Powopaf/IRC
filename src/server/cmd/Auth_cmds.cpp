@@ -1,5 +1,4 @@
 #include "../../../inc/server/Server.hpp"
-#include "../../../inc/server/cmd/cmd.hpp"
 
 void    Server::handlePasswordAuth(std::vector<std::string> args){
     if (args.size() != 2){

@@ -19,7 +19,6 @@
 #include <cstdlib>
 #include <cstdio>
 #include "../user/User.hpp"
-#include "./cmd/cmd.hpp"
 
 class Server {
 private:
@@ -48,7 +47,7 @@ public:
 	void						handleMessage();
 	void						sendResponse(std::string response);
 	//Executing
-	void						exec_msg(const std::string& cmd, std::vector<std::string> args);
+
 	void						handlePasswordAuth(std::vector<std::string> args); 
 	void						handleNick(std::vector<std::string> args);
 	void						handleUserName(std::vector<std::string> args);
