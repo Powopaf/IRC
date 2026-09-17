@@ -46,7 +46,13 @@ public:
 	void 						handleDisconnection();
 	void						_rmClient();
 	void						handleMessage();
-	void						exec_msg(const std::string& cmd, std::vector<std::string> args); 
-};
+	void						sendResponse(std::string response);
+	//Executing
+	void						exec_msg(const std::string& cmd, std::vector<std::string> args);
+	void						handlePasswordAuth(std::vector<std::string> args); 
+	void						handleNick(std::vector<std::string> args);
+	void						handleUserName(std::vector<std::string> args);
+	void						registerAttempt();
+};	
 
 #endif

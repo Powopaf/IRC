@@ -33,10 +33,19 @@ static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 }
 
 void Server::exec_msg(const std::string& cmd, std::vector<std::string> args) {
-	if (cmd == "PASS")
-	{
-		std::cout << args[0] << std::endl;
+	if(!_users[uf].getLogged()) {
+		if (cmd == "PASS")
+			handlePasswordAuth(args);
+		else if (cmd == "NICK")
+			handleNick(args);
+		else if (cmd == "USER")
+			handleUserName(args);
+		else
+			sendResponse("Error: Cant send commands other than PASS, NICK and USER; you have not yet registered");
+		registerAttempt();
 	}
+	else
+		sendResponse("Youre already logged in");
 	// if (cmd == "KICK") {
 	// 	kick(args);
 	// }

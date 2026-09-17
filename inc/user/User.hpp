@@ -30,7 +30,9 @@ class User{
 		const std::string	getFullId(void) const { return (_nickname + "!" + _username + "@" + _ipv4_addr); }
 		bool				getLogged(void) const { return (_isloggedin); }
 		bool				getAdmin(void) const { return (_isadmin); }
-
+		bool				getHasNick(void) const { return (_nick_received); }
+		bool				getHasPass(void) const { return (_pass_received); }
+		bool				getHasUsername(void) const { return (_uname_received); }
 		// setters
 		void				setHostname(char * hostname) { _ipv4_addr = std::string(hostname); }
 		void				setFd(int fd) { _fd = fd; }
@@ -40,6 +42,9 @@ class User{
 		void				setUsername(std::string& username) { _username = username; }
 		void				setIpv4Addr(std::string ipv4_addr) { _ipv4_addr = ipv4_addr; }
 		void				setBuf(std::string buffer) { _buffer += buffer; }
+		void				setGotPass(void) { _pass_received = true; }
+		void				setGotNick(void) { _nick_received = true; }
+		void				setGotUsername(void) { _uname_received = true; }
 
 };
 

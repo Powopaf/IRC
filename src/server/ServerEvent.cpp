@@ -44,3 +44,9 @@ void Server::_rmClient() {
 		}
 	_users.erase(uf);
 }
+
+void Server::sendResponse(std::string response) {
+	int status = send(uf, response.c_str(), response.length(), 0);
+	if (status == -1)
+		std::cerr << "send() ERROR: failed to send reponse to socket_fd: " << uf << std::endl;
+}

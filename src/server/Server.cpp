@@ -39,7 +39,7 @@ void Server::startServ(void) {
 					}
 					else if (n <= 0) {
 						handleDisconnection();
-						return;
+						// return;
 					}
 				}
 			}
