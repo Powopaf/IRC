@@ -23,6 +23,8 @@ class Channel {
 
 	void addUser(User& user);
 
+	std::string getName();
+
 };
 
 #endif

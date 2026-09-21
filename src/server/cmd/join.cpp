@@ -1,8 +1,8 @@
 #include "../../../inc/server/Server.hpp"
+#include <cstddef>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <type_traits>
 #include <vector>
 
 /*
@@ -16,7 +16,7 @@
 	if there is no args that start by 3  = error
 */
 
-std::vector<std::string> split(std::string input, bool is_channel) {
+static std::vector<std::string> split(std::string input, bool is_channel) {
 	std::vector<std::string> res;
 	std::stringstream stream(input);
 	std::string part;
@@ -29,11 +29,30 @@ std::vector<std::string> split(std::string input, bool is_channel) {
 	return res;
 }
 
+static bool exist(std::string name, std::vector<Channel*> ch) {
+	for (size_t i = 0; i < ch.size(); i++) {
+		if (ch[i]->getName() == name)
+			return true;
+	}
+	return false;
+}
+
 void Server::join(std::vector<std::string> args) {
 	std::vector<std::string> channels_name;
 	std::vector<std::string> keys;
 
 	if (args.size() != 1 || args.size() != 2)
 		throw std::invalid_argument("Need 1 or 2 args for JOIN to work");
-
+	channels_name = split(args[0], true);
+	if (args.size() == 2)
+		keys = split(args[1], false);
+	for (size_t i = 0; i < channels_name.size(); i++) {
+		if (!exist(channels_name[i], _channels)) {
+			add_Channel(channels_name[i], _users[uf]);
+		}
+		// TODO/ add user to channel
+		else {
+			
+		}
+	}
 }
