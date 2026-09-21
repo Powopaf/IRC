@@ -29,7 +29,7 @@ static std::vector<std::string> split(std::string input, bool is_channel) {
 	return res;
 }
 
-static bool exist(std::string name, std::vector<Channel*> ch) {
+static int exist(std::string name, std::vector<Channel*> ch) {
 	for (size_t i = 0; i < ch.size(); i++) {
 		if (ch[i]->getName() == name)
 			return true;
@@ -47,12 +47,12 @@ void Server::join(std::vector<std::string> args) {
 	if (args.size() == 2)
 		keys = split(args[1], false);
 	for (size_t i = 0; i < channels_name.size(); i++) {
-		if (!exist(channels_name[i], _channels)) {
+		int a = exist(channels_name[i], _channels);
+		if (a >= _channels.size())
 			add_Channel(channels_name[i], _users[uf]);
-		}
-		// TODO/ add user to channel
-		else {
-			
-		}
+		else if (_channels[a]->HasPass())
+			add_User_Channel(channels_name[i], keys[i], _users[uf]);
+		else
+			add_User_Channel(channels_name[i], _users[uf]);
 	}
 }

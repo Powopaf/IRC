@@ -14,16 +14,21 @@ class Channel {
 		std::string _key;
 		bool _inviteOnly;
 		bool _topicRestricted;
-		unsigned int _usersLimit;
+		unsigned int _usersLimit; // is = 0 then there is no limit
+		std::string pass;
+		Channel();
 	public:
-	Channel();
+	Channel(std::string name);
 	~Channel() {}
 	Channel(const Channel& copy);
 	Channel& operator=(const Channel& other);
 
 	void addUser(User& user);
+	void addOps(User& user);
 
-	std::string getName();
+	bool HasPass();
+	std::string getName() const { return _name; }
+	std::string getPass() const { return pass; }
 
 };
 
