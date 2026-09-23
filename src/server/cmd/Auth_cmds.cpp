@@ -1,11 +1,11 @@
 #include "../../../inc/server/Server.hpp"
 
 void    Server::handlePasswordAuth(std::vector<std::string> args){
-    if (args.size() != 2){
+    if (args.size() != 1){
         sendResponse("Error: PASS needs one argument only\r\n");
         return;
     }
-    if (_password != args[1]){
+    if (_password != args[0]){
         sendResponse("Error: Wrong password\r\n");
         return;
     }
@@ -13,20 +13,20 @@ void    Server::handlePasswordAuth(std::vector<std::string> args){
 }
 
 void    Server::handleNick(std::vector<std::string> args){
-    if (args.size() != 2){
+    if (args.size() != 1){
         sendResponse("Error: NICK needs one argument only\r\n");
         return;
     }
-    _users[uf].setNick(args[1]);
+    _users[uf].setNick(args[0]);
     _users[uf].setGotNick();
 }
 
 void    Server::handleUserName(std::vector<std::string> args){
-    if (args.size() != 2){
+    if (args.size() != 1){
         sendResponse("Error: USER needs one argument only\r\n");
         return;
     }
-    _users[uf].setUsername(args[1]);
+    _users[uf].setUsername(args[0]);
     _users[uf].setGotUsername();
 }
 
