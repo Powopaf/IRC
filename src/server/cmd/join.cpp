@@ -32,23 +32,23 @@ static std::vector<std::string> split(std::string input, bool is_channel) {
 static int exist(std::string name, std::vector<Channel*> ch) {
 	for (size_t i = 0; i < ch.size(); i++) {
 		if (ch[i]->getName() == name)
-			return true;
+			return static_cast<int>(i);
 	}
-	return false;
+	return -1;
 }
 
 void Server::join(std::vector<std::string> args) {
 	std::vector<std::string> channels_name;
 	std::vector<std::string> keys;
 
-	if (args.size() != 1 || args.size() != 2)
+	if (args.size() < 1 || args.size() > 2)
 		throw std::invalid_argument("Need 1 or 2 args for JOIN to work");
 	channels_name = split(args[0], true);
 	if (args.size() == 2)
 		keys = split(args[1], false);
 	for (size_t i = 0; i < channels_name.size(); i++) {
 		int a = exist(channels_name[i], _channels);
-		if (a >= _channels.size())
+		if (a == -1)
 			add_Channel(channels_name[i], _users[uf]);
 		else if (_channels[a]->HasPass())
 			add_User_Channel(channels_name[i], keys[i], _users[uf]);

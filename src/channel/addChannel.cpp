@@ -6,7 +6,7 @@ void Server::add_Channel(std::string name, User ops) {
 }
 
 void Server::add_User_Channel(std::string name, User user) {
-	for (size_t i = 0; _channels.size(); i++) {
+	for (size_t i = 0; i < _channels.size(); i++) {
 		if (name == _channels[i]->getName()) {
 			_channels[i]->addUser(user);
 		}
@@ -14,7 +14,7 @@ void Server::add_User_Channel(std::string name, User user) {
 }
 
 void Server::add_User_Channel(std::string name, std::string pass, User user) {
-	for (size_t i = 0; _channels.size(); i++) {
+	for (size_t i = 0; i < _channels.size(); i++) {
 		if (name == _channels[i]->getName() &&
 			_channels[i]->getPass() == pass)
 			_channels[i]->addUser(user);
