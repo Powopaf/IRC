@@ -1,7 +1,12 @@
 #include "../../inc/channel/Channel.hpp"
 
-Channel::Channel() {
-
+Channel::Channel(std::string name) {
+	_name = name;
+	_topic = "";
+	_key = "";
+	_inviteOnly = false;
+	_topicRestricted = false;
+	_usersLimit = 0;
 }
 
 Channel::Channel(const Channel& copy) {
@@ -18,4 +23,12 @@ Channel& Channel::operator=(const Channel& other) {
 
 void Channel::addUser(User& user) {
 	_members.push_back(&user);
+}
+
+void Channel::addOps(User& user) {
+	_operators.push_back(&user);
+}
+
+bool Channel::HasPass() {
+	return !pass.empty();
 }

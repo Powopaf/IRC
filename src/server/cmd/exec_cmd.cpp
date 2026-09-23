@@ -56,9 +56,11 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args, Serv
 			serv.join(args);
 		else if (cmd == "PRIVMSG")
 			serv.privmsg(args);
-	else
-		throw std::invalid_argument("Command does not exist");
+		else
+			throw std::invalid_argument("Command does not exist");
 }
+
+// TODO: add a try catch here
 
 void Server::handleMessage() {
 	if (!_users[uf].hasCmd())

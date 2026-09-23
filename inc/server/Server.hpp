@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include "../user/User.hpp"
+#include "../channel/Channel.hpp"
 
 class Server {
 private:
@@ -32,7 +33,7 @@ private:
 	std::string					_hostname;
 	std::vector<struct pollfd>	_pollFds; // -> active socket list
 	std::map<int, User>			_users; 
-	// std::vector<Channel *>	_channels; 
+	std::vector<Channel*>		_channels; 
 public:
 	Server(int port, std::string password);
 	~Server(void);
@@ -63,6 +64,10 @@ public:
 	void join(std::vector<std::string> args);
 	void privmsg(std::vector<std::string> args);
 	void nick(std::vector<std::string> args);
+
+	void add_Channel(std::string name, User ops);
+	void add_User_Channel(std::string channel, User user);
+	void add_User_Channel(std::string channel, std::string pass, User user);
 };	
 
 #endif
