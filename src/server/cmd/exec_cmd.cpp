@@ -1,38 +1,50 @@
 #include "../../../inc/server/Server.hpp"
-// #include <stdexcept>
-// #include <string>
-// #include <vector>
+#include <cctype>
 
-static std::string extract_cmd(const std::string& msg, size_t i) {
+static std::string extract_cmd(const std::string& msg, size_t& i) {
 	std::string cmd;
-	size_t j = 0;
-	while (std::isupper(msg[i])) {
-		cmd += msg[i];
-		i++; j++;
+
+	if (msg.empty())
+		throw std::invalid_argument("Empty message");
+	if (msg[0] == ':') {
+		size_t prefix_end = msg.find(' ');
+		if (prefix_end == std::string::npos || prefix_end == 1)
+			throw std::invalid_argument("Invalid message prefix");
+		i = prefix_end + 1;
 	}
-	// if (msg[i] != ' ')
-	// 	throw std::invalid_argument("The command is invalid: " + msg);
+	while (i < msg.size() && msg[i] == ' ')
+		i++;
+	while (i < msg.size() && std::isupper(static_cast<unsigned char>(msg[i]))) {
+		cmd += msg[i];
+		i++;
+	}
+	if (cmd.empty() || (i < msg.size() && msg[i] != ' '))
+		throw std::invalid_argument("Invalid command syntax");
 	return cmd;
 }
 
 static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 	std::vector<std::string> args;
-	while (msg[i]) { //&& msg[i] != '\r') 
-		
-		std::string a;
-		while (msg[i] && msg[i] != ' ') {
-			a.push_back(msg[i]);
+	while (i < msg.size()) {
+		while (i < msg.size() && msg[i] == ' ')
 			i++; 
+		if (i == msg.size())
+			break;
+		if (msg[i] == ':') {
+			args.push_back(msg.substr(i + 1));
+			break;
 		}
-		args.push_back(a);
-		if (msg[i])
-			i++;
+		size_t end = msg.find(' ', i);
+		if (end == std::string::npos)
+			end = msg.size();
+		args.push_back(msg.substr(i, end - i));
+		i = end;
 	}
 	return args;
 }
 
 static void exec_msg(const std::string& cmd, std::vector<std::string> args, Server& serv) {
-	if(!serv.getUsers()[serv._getUF()].getLogged()) {
+	if(!serv.getUser(serv._getUF()).getLogged()) {
 		if (cmd == "PASS")
 			serv.handlePasswordAuth(args);
 		else if (cmd == "NICK")
@@ -65,22 +77,12 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args, Serv
 void Server::handleMessage() {
 	if (!_users[uf].hasCmd())
 		return;
-	const std::string& msg = _users[uf].getCmd();
+	std::string msg = _users[uf].getCmd();
 	size_t i = 0;
 	if (msg.size() > 512)
 		throw std::length_error("Message is too long");
-	// if (msg[msg.size() - 1] != '\n' && msg[msg.size() - 2] != '\r')
-	// 	throw std::invalid_argument("Message does not end with \\r\\n");
-	if (msg[0] == ':') {
-		while (msg[i] != ' ')
-			i++;
-	}
-	// i++;
 	std::string cmd = extract_cmd(msg, i);
-	std::cout << "cmd is: " << cmd << std::endl;
 	std::vector<std::string> args = extract_args(msg, i);
 	std::cout << "Received data from fd " << uf << ": " << msg << std::endl;
-	if (cmd.empty())
-		throw std::length_error("cmd is empty");
 	exec_msg(cmd, args, *this);
 }

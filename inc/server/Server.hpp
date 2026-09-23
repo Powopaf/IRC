@@ -48,7 +48,7 @@ public:
 	void						handleMessage();
 	void						sendResponse(std::string response);
 	int							_getUF() { return (uf); }
-	std::map<int, User>			getUsers() { return _users; }
+	User&					getUser(int fd) { return _users[fd]; }
 	//Executing
 
 	void						handlePasswordAuth(std::vector<std::string> args); 
