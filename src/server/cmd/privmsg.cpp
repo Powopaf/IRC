@@ -34,11 +34,11 @@ void Server::privmsg(std::vector<std::string> args) {
 			return;
 		}
 		std::map<int, User>::iterator it;
-		for (it = _users.begin(); it != _users.end(); it++)
-			if (it->second.getNick() == target)
+		for (it = _users.begin(); it != _users.end(); it++){
+			if (it->second.getNick() == target){
 				sendMessage(fullmsg, it->first);
-			else
-				continue;
-		sendResponse("PRIVMSG rejected: no such Nick\r\n");
+				break;}
+			if (it == _users.end())
+				sendResponse("PRIVMSG rejected: no such Nick\r\n");}
 	}
 }
