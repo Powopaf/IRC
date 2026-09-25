@@ -47,6 +47,7 @@ public:
 	void						_rmClient();
 	void						handleMessage();
 	void						sendResponse(std::string response);
+	void						sendMessage(std::string response, int fd);
 	int							_getUF() { return (uf); }
 	std::map<int, User>			getUsers() { return _users; }
 	//Executing

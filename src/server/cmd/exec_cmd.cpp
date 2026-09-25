@@ -44,7 +44,13 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args, Serv
 		serv.registerAttempt();
 	}
 	else
-		if (cmd == "KICK")
+		if (cmd == "PASS" || cmd == "USER")
+			serv.sendResponse("You are already registered\r\n");
+		else if (cmd == "NICK")
+			serv.handleNick(args);
+		else if (cmd == "PRIVMSG")
+			serv.privmsg(args);
+		else if (cmd == "KICK")
 			serv.kick(args);
 		else if (cmd == "INVITE")
 			serv.invite(args);
