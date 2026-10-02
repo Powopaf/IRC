@@ -29,6 +29,10 @@ class Channel {
 	bool HasPass();
 	std::string getName() const { return _name; }
 	std::string getPass() const { return pass; }
+	bool getTopicRestrited() const { return _topicRestricted; }
+	std::string getTopic() const { return _topic; }
+
+	void setTopic(std::string& topic) { _topic = topic; }
 
 };
 
