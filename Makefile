@@ -1,24 +1,41 @@
 CC = c++
-CPPFLAGS = -g3 -Wall -Wextra -Werror -std=c++98 #-fsanitize=address -fsanitize=undefined -fstack-protector-all -ggdb3
-
+CFLAGS =  -Wall -Wextra -Werror -MMD -MP -std=c++98
 NAME = ircserv
+LIBS =
 
-SRC_DIR = src
+SRC = ./main.cpp \
+	  ./src/server/Server.cpp \
+	  ./src/server/ServerBuild.cpp \
+	  ./src/server/ServerEvent.cpp \
+	  ./src/user/User.cpp \
+	  ./src/server/cmd/exec_cmd.cpp \
+	  ./src/server/cmd/invite.cpp \
+	  ./src/server/cmd/kick.cpp \
+	  ./src/server/cmd/mode.cpp \
+	  ./src/server/cmd/topic.cpp \
+	  ./src/server/cmd/join.cpp \
+	  ./src/server/cmd/privmsg.cpp \
+	  ./src/server/cmd/Auth_cmds.cpp \
+	  ./src/channel/addChannel.cpp \
+	  ./src/channel/Channel.cpp
+	  
 
-SRCS = $(shell find $(SRC_DIR) -type f -name "*.cpp")
-
-OBJS = $(SRCS:.cpp=.o)
+OBJ = $(addprefix .obj/,$(SRC:.cpp=.o))
+DEP = $(addprefix .obj/,$(SRC:.cpp=.d))
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	$(CC) $(CPPFLAGS) -o $(NAME) $(OBJS)
+$(NAME): $(OBJ)
+	$(CC) -o $(NAME) $+ $(LIBS)
 
-%.o: %.cpp
-	$(CC) $(CPPFLAGS) -c $< -o $@
+.obj/%.o: %.cpp
+	@mkdir -p .obj
+	$(CC) $(CFLAGS) -c $< -o $@
+
+-include $(DEP)
 
 clean:
-	rm -f $(OBJS)
+	rm -rf .obj
 
 fclean: clean
 	rm -f $(NAME)

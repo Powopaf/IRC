@@ -2,8 +2,8 @@
 #include <stdexcept>
 
 void Server::topic(std::vector<std::string> args) {
-	if (args.size() == 0 || args.size() > 2)
-		throw std::invalid_argument("0 or more than 2 args");
+	if (args.empty() || args.size() > 2 || args[0].empty())
+		throw std::invalid_argument("TOPIC needs a channel and an optional topic");
 	int i = findChannel(args[0]);
 	if (i == -1)
 		throw std::invalid_argument("channel does not exist");

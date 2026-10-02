@@ -50,7 +50,7 @@ void Server::startServ(void) {
 
 int Server::findChannel(std::string name) {
 	size_t i = 0;
-	while (_channels[i]->getName() != name)
+	while (i < _channels.size() && _channels[i]->getName() != name)
 		i++;
 	return i >= _channels.size() ? -1 : i;
 }
