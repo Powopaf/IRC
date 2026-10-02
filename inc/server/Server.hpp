@@ -49,7 +49,8 @@ public:
 	void						sendResponse(std::string response);
 	void						sendMessage(std::string response, int fd);
 	int							_getUF() { return (uf); }
-	std::map<int, User>			getUsers() { return _users; }
+	User&						getUser(int fd) { return _users[fd]; }
+	int							findChannel(std::string name);
 	//Executing
 
 	void						handlePasswordAuth(std::vector<std::string> args); 

@@ -1,4 +1,5 @@
 #include "../../inc/server/Server.hpp"
+#include <cstddef>
 // #include <exception>
 // #include <iostream>
 // #include <ostream>
@@ -45,4 +46,11 @@ void Server::startServ(void) {
 			}
 		}
 	}
+}
+
+int Server::findChannel(std::string name) {
+	size_t i = 0;
+	while (i < _channels.size() && _channels[i]->getName() != name)
+		i++;
+	return i >= _channels.size() ? -1 : i;
 }
