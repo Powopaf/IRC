@@ -1,35 +1,34 @@
 CC = c++
-CFLAGS =  -Wall -Wextra -Werror -MMD -MP -std=c++98
+CFLAGS = -Wall -Wextra -Werror -MMD -MP -std=c++98
 NAME = ircserv
 LIBS =
 
-SRC = ./main.cpp \
-	  ./src/server/Server.cpp \
-	  ./src/server/ServerBuild.cpp \
-	  ./src/server/ServerEvent.cpp \
-	  ./src/user/User.cpp \
-	  ./src/server/cmd/exec_cmd.cpp \
-	  ./src/server/cmd/invite.cpp \
-	  ./src/server/cmd/kick.cpp \
-	  ./src/server/cmd/mode.cpp \
-	  ./src/server/cmd/topic.cpp \
-	  ./src/server/cmd/join.cpp \
-	  ./src/server/cmd/privmsg.cpp \
-	  ./src/server/cmd/Auth_cmds.cpp \
-	  ./src/channel/addChannel.cpp \
-	  ./src/channel/Channel.cpp
-	  
+SRC = src/main.cpp \
+      src/server/Server.cpp \
+      src/server/ServerBuild.cpp \
+      src/server/ServerEvent.cpp \
+      src/user/User.cpp \
+      src/server/cmd/exec_cmd.cpp \
+      src/server/cmd/invite.cpp \
+      src/server/cmd/kick.cpp \
+      src/server/cmd/mode.cpp \
+      src/server/cmd/topic.cpp \
+      src/server/cmd/join.cpp \
+      src/server/cmd/privmsg.cpp \
+      src/server/cmd/Auth_cmds.cpp \
+      src/channel/addChannel.cpp \
+      src/channel/Channel.cpp
 
 OBJ = $(addprefix .obj/,$(SRC:.cpp=.o))
-DEP = $(addprefix .obj/,$(SRC:.cpp=.d))
+DEP = $(OBJ:.o=.d)
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) -o $(NAME) $+ $(LIBS)
+	$(CC) -o $@ $^ $(LIBS)
 
 .obj/%.o: %.cpp
-	@mkdir -p .obj
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 -include $(DEP)
