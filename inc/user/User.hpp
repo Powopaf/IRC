@@ -24,6 +24,7 @@ class User{
 
 		//getters
 		const std::string&	getBuf(void) const { return _buffer; }
+		int					getFd(void) const { return _fd; }
 		const std::string&	getHostname(void) const { return (_ipv4_addr); }
 		const std::string&	getNick(void) const { return (_nickname); }
 		const std::string&	getUsername(void) const { return (_username); }

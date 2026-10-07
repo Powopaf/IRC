@@ -28,6 +28,10 @@ class Channel {
 
 	bool HasPass();
 	std::string getName() const { return _name; }
+	const std::vector<User *>& getMembers() const { return _members; }
+	bool hasMember(const User& user) const;
+	bool hasOperator(const User& user) const;
+	bool isInviteOnly() const { return _inviteOnly; }
 	std::string getPass() const { return pass; }
 	bool getTopicRestrited() const { return _topicRestricted; }
 	std::string getTopic() const { return _topic; }
