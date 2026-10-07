@@ -1,5 +1,4 @@
 #include "../../../inc/server/Server.hpp"
-#include <stdexcept>
 
 void Server::topic(std::vector<std::string> args) {
 	if (args.empty() || args.size() > 2 || args[0].empty()) {

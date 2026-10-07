@@ -68,7 +68,11 @@ void Server::join(std::vector<std::string> args) {
 			add_User_Channel(channels_name[i], keys[i], _users[uf]);
 		else
 			add_User_Channel(channels_name[i], _users[uf]);
-		sendResponse(":" + _users[uf].getFullId() + " JOIN :"
-			+ channels_name[i] + "\r\n");
+		std::string message = ":" + _users[uf].getFullId() + " JOIN :"
+			+ channels_name[i] + "\r\n";
+		int channel_index = exist(channels_name[i], _channels);
+		const std::vector<User *>& members = _channels[channel_index]->getMembers();
+		for (size_t member = 0; member < members.size(); member++)
+			sendMessage(message, members[member]->getFd());
 	}
 }

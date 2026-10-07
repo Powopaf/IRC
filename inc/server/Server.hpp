@@ -67,9 +67,9 @@ public:
 	void privmsg(std::vector<std::string> args);
 	void nick(std::vector<std::string> args);
 
-	void add_Channel(std::string name, User ops);
-	void add_User_Channel(std::string channel, User user);
-	void add_User_Channel(std::string channel, std::string pass, User user);
+	void add_Channel(std::string name, User& ops);
+	void add_User_Channel(std::string channel, User& user);
+	void add_User_Channel(std::string channel, std::string pass, User& user);
 };	
 
 #endif
