@@ -29,6 +29,20 @@ void Channel::addOps(User& user) {
 	_operators.push_back(&user);
 }
 
+bool Channel::hasMember(const User& user) const {
+	for (size_t i = 0; i < _members.size(); i++)
+		if (_members[i] == &user)
+			return true;
+	return false;
+}
+
+bool Channel::hasOperator(const User& user) const {
+	for (size_t i = 0; i < _operators.size(); i++)
+		if (_operators[i] == &user)
+			return true;
+	return false;
+}
+
 bool Channel::HasPass() {
 	return !pass.empty();
 }
