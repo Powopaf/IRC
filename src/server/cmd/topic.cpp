@@ -32,7 +32,10 @@ void Server::topic(std::vector<std::string> args) {
 		else {
 			_channels[i]->setTopic(args[1]);
 		}
-		sendResponse(":" + _users[uf].getFullId() + " TOPIC " + args[0]
-			+ " :" + args[1] + "\r\n");
+		std::string message = ":" + _users[uf].getFullId() + " TOPIC "
+			+ args[0] + " :" + args[1] + "\r\n";
+		const std::vector<User *>& members = _channels[i]->getMembers();
+		for (size_t member = 0; member < members.size(); member++)
+			sendMessage(message, members[member]->getFd());
 	}
 }
