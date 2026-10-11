@@ -31,6 +31,9 @@ class Channel {
 	std::string getPass() const { return pass; }
 	bool getTopicRestrited() const { return _topicRestricted; }
 	std::string getTopic() const { return _topic; }
+	const std::vector<User*>& getUsers() const { return _members; }
+
+	bool isUserOnChannel(User *c) const;
 
 	void setTopic(std::string& topic) { _topic = topic; }
 

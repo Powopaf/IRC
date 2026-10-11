@@ -32,3 +32,15 @@ void Channel::addOps(User& user) {
 bool Channel::HasPass() {
 	return !pass.empty();
 }
+
+bool Channel::isUserOnChannel(User *c) const {
+	for (std::size_t i = 0; i < _members.size(); ++i) {
+		if (_members[i] == c)
+			return (true);
+	}
+	for (std::size_t i = 0; i < _operators.size(); ++i) {
+		if (_operators[i] == c)
+			return (true);
+	}
+	return (false);
+}

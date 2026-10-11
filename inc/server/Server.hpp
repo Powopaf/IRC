@@ -50,7 +50,9 @@ public:
 	void						sendMessage(std::string response, int fd);
 	int							_getUF() { return (uf); }
 	User&						getUser(int fd) { return _users[fd]; }
+	User*						getUserP(int fd) { return &_users[fd]; };
 	int							findChannel(std::string name);
+	void						sendToChannel(Channel *ch, std::string response, User* excluded_sender);
 	//Executing
 
 	void						handlePasswordAuth(std::vector<std::string> args); 
@@ -70,6 +72,7 @@ public:
 	void add_Channel(std::string name, User ops);
 	void add_User_Channel(std::string channel, User user);
 	void add_User_Channel(std::string channel, std::string pass, User user);
+	Channel* getChannel(std::string& channel_name) const;
 };	
 
 #endif
