@@ -3,7 +3,7 @@ CFLAGS =  -Wall -Wextra -Werror -MMD -MP -std=c++98
 NAME = ircserv
 LIBS =
 
-SRC = ./main.cpp \
+SRC = ./src/main.cpp \
 	  ./src/server/Server.cpp \
 	  ./src/server/ServerBuild.cpp \
 	  ./src/server/ServerEvent.cpp \
@@ -29,7 +29,7 @@ $(NAME): $(OBJ)
 	$(CC) -o $(NAME) $+ $(LIBS)
 
 .obj/%.o: %.cpp
-	@mkdir -p .obj
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 -include $(DEP)
