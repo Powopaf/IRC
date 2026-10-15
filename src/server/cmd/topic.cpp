@@ -1,23 +1,41 @@
 #include "../../../inc/server/Server.hpp"
-#include <stdexcept>
 
 void Server::topic(std::vector<std::string> args) {
-	if (args.empty() || args.size() > 2 || args[0].empty())
-		throw std::invalid_argument("TOPIC needs a channel and an optional topic");
+	if (args.empty() || args.size() > 2 || args[0].empty()) {
+		sendResponse(":" + _hostname + " 461 " + _users[uf].getNick()
+			+ " TOPIC :Not enough parameters\r\n");
+		return;
+	}
 	int i = findChannel(args[0]);
-	if (i == -1)
-		throw std::invalid_argument("channel does not exist");
+	if (i == -1) {
+		sendResponse(":" + _hostname + " 403 " + _users[uf].getNick()
+			+ " " + args[0] + " :No such channel\r\n");
+		return;
+	}
 	if (args.size() == 1) {
-		// send message with topic topic = _channels[i].getTopic();
+		if (_channels[i]->getTopic().empty())
+			sendResponse(":" + _hostname + " 331 " + _users[uf].getNick()
+				+ " " + args[0] + " :No topic is set\r\n");
+		else
+			sendResponse(":" + _hostname + " 332 " + _users[uf].getNick()
+				+ " " + args[0] + " :" + _channels[i]->getTopic() + "\r\n");
 	}
 	else {
 		if (_channels[i]->getTopicRestrited() && _users[uf].getAdmin()) {
 			_channels[i]->setTopic(args[1]);
 		}
-		else if (_channels[i]->getTopicRestrited())
-			throw std::invalid_argument("user does notr have perm");
+		else if (_channels[i]->getTopicRestrited()) {
+			sendResponse(":" + _hostname + " 482 " + _users[uf].getNick()
+				+ " " + args[0] + " :You're not channel operator\r\n");
+			return;
+		}
 		else {
 			_channels[i]->setTopic(args[1]);
 		}
+		std::string message = ":" + _users[uf].getFullId() + " TOPIC "
+			+ args[0] + " :" + args[1] + "\r\n";
+		const std::vector<User *>& members = _channels[i]->getMembers();
+		for (size_t member = 0; member < members.size(); member++)
+			sendMessage(message, members[member]->getFd());
 	}
 }
