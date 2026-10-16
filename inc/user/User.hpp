@@ -23,7 +23,6 @@ class User{
 		std::string			getCmd(); // test with hasCmd before using this unknow behavior else
 
 		//getters
-		int					getFd(void) const { return (this->_fd); }
 		const std::string&	getBuf(void) const { return _buffer; }
 		int					getFd(void) const { return _fd; }
 		const std::string&	getHostname(void) const { return (_ipv4_addr); }

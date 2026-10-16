@@ -2,10 +2,10 @@
 
 void Server::privmsg(std::vector<std::string> args) {
 	if (args.size() < 2 || (args[0].empty())){
-		sendResponse("PRIVMSG: wrong arguments\r\n");
+		sendResponse(":" + _hostname + " 411 " + _users[uf].getNick() + " :No recipient given ( PRIVMSG/MSG )\r\n");
 		return;
 	}
-	User *sender = getUserP(uf);
+	User sender = getUser(uf);
 	std::vector<std::string> receivers;
 	std::string receiver_str = args[0];
 	std::size_t pos;
@@ -22,25 +22,25 @@ void Server::privmsg(std::vector<std::string> args) {
 		msg += (i == 1 ? "" : " ") + args[i];
 
 	if (msg.empty()){
-		sendResponse("PRIVMSG rejected: message is empty\r\n");
+		sendResponse(":" + _hostname + " 412 " + _users[uf].getNick() + " :No text to send\r\n");
 		return; 
 	}
 
 	for (std::size_t i = 0; i < receivers.size(); i++){
 		std::string& target = receivers[i];
-		std::string fullmsg = "< " + _users[uf].getFullId() + " MSG " + target + " > " + msg + "\r\n";
+		std::string fullmsg = ":" + _users[uf].getFullId() + " MSG " + target + " :" + msg + "\r\n";
 
 		if (fullmsg.length() > 512){
-			sendResponse("MSG too long\r\n");
+			sendResponse(":" + _hostname + " NOTICE " + _users[uf].getNick() + " :Input line too long (max 512 bytes)\r\n");
 			return;
 		}
 		if (target[0] == '#') {
 			Channel* channel = getChannel(target);
 			if (!channel)
-				sendResponse("No such channel\r\n");
+				sendResponse(":" + _hostname + " 403 " + _users[uf].getNick() + " " + target + " :No such channel\r\n");
 			else {
 				if (!channel->isUserOnChannel(sender)){
-					sendResponse("You are not on this channel.\r\n");
+					sendResponse(":" + _hostname + " 442 " + _users[uf].getNick() + " : " + target + " :You're not on that channel\r\n");
 					return;
 				}
 				sendToChannel(channel, fullmsg, sender);
@@ -53,7 +53,7 @@ void Server::privmsg(std::vector<std::string> args) {
 					sendMessage(fullmsg, it->first);
 					break;}
 				if (it == _users.end())
-					sendResponse("PRIVMSG rejected: no such Nick.\r\n");} 
+					sendResponse(":" + _hostname + " 401 " + _users[uf].getNick() + " " + target + " :No such nick/channel\r\n");} 
 		}
 	}
 }

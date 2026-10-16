@@ -63,7 +63,7 @@ Channel* Server::getChannel(std::string& channel_name) const {
 	return (NULL);
 }
 
-void Server::sendToChannel(Channel *ch, std::string response, User* excluded_sender){
+void Server::sendToChannel(Channel *ch, std::string response, User& excluded_sender){
 	std::vector<User *> users = ch->getUsers();
 
 	for (std::size_t i = 0; i < users.size(); ++i) {
@@ -71,7 +71,7 @@ void Server::sendToChannel(Channel *ch, std::string response, User* excluded_sen
 			std::cerr << "[WARN] sendToChannel: NULL client pointer at index " << i << std::endl;
 			continue;
 		}
-		if (users[i] == excluded_sender)
+		if (users[i]->getFd() == excluded_sender.getFd())
 			continue;
 		int fd = users[i]->getFd();
 		int status = send(fd, response.c_str(), response.length(), 0);
