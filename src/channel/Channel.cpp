@@ -1,4 +1,5 @@
 #include "../../inc/channel/Channel.hpp"
+#include <iostream>
 
 Channel::Channel(std::string name) {
 	_name = name;
@@ -31,18 +32,28 @@ void Channel::addOps(User& user) {
 
 bool Channel::hasMember(const User& user) const {
 	for (size_t i = 0; i < _members.size(); i++)
-		if (_members[i] == &user)
+		if (_members[i]->getFd() == user.getFd()){
+			std::cout << "meowmeow" << std::endl;
 			return true;
+		}
 	return false;
 }
 
 bool Channel::hasOperator(const User& user) const {
 	for (size_t i = 0; i < _operators.size(); i++)
-		if (_operators[i] == &user)
+		if (_operators[i]->getFd() == user.getFd()){
+			std::cout << "meowmeow" << std::endl;	
 			return true;
+		}
 	return false;
 }
 
 bool Channel::HasPass() {
 	return !pass.empty();
+}
+
+bool Channel::isUserOnChannel(User &c) const {
+	if (hasMember(c) || hasOperator(c))
+		return true;
+	return false;
 }
