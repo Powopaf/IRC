@@ -1,4 +1,5 @@
 #include "../../inc/channel/Channel.hpp"
+#include <cstddef>
 
 Channel::Channel(std::string name) {
 	_name = name;
@@ -29,6 +30,21 @@ void Channel::addOps(User& user) {
 	_operators.push_back(&user);
 }
 
+void Channel::removeUser(User& user) {
+	for (std::vector<User *>::iterator it = _members.begin(); it != _members.end(); ++it) {
+		if (*it == &user) {
+			_members.erase(it);
+			break;
+		}
+	}
+	for (std::vector<User *>::iterator it = _operators.begin(); it != _operators.end(); ++it) {
+		if (*it == &user) {
+			_operators.erase(it);
+			break;
+		}
+	}
+}
+
 bool Channel::hasMember(const User& user) const {
 	for (size_t i = 0; i < _members.size(); i++)
 		if (_members[i] == &user)
@@ -53,8 +69,4 @@ bool Channel::isOps(User &user) {
 			return true;
 	}
 	return false;
-}
-
-void Channel::broadcast(std::string& msg) {
-	
 }

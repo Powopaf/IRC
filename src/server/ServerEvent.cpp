@@ -1,8 +1,6 @@
 #include "../../inc/server/Server.hpp"
-// #include <arpa/inet.h>
-// #include <iostream>
-// #include <utility>
-// #include <poll.h>
+#include <iostream>
+#include <stdio.h>
 
 void Server::handleNewConnection(void) {
 	struct sockaddr_in user_addr;

@@ -5,19 +5,11 @@
 #include <string>
 #include <netinet/in.h>
 #include <map>
-#include <iostream>
-#include <exception>
-#include <ostream>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <poll.h>
-#include <stdexcept>
 #include <arpa/inet.h>
-#include <utility>
-#include <csignal>
-#include <cstdlib>
-#include <cstdio>
 #include "../user/User.hpp"
 #include "../channel/Channel.hpp"
 
@@ -70,6 +62,8 @@ public:
 	void add_Channel(std::string name, User& ops);
 	void add_User_Channel(std::string channel, User& user);
 	void add_User_Channel(std::string channel, std::string pass, User& user);
+
+	void broadcast(Channel& channel, std::string& msg);
 };	
 
 #endif

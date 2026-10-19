@@ -25,6 +25,7 @@ class Channel {
 
 	void addUser(User& user);
 	void addOps(User& user);
+	void removeUser(User& user);
 	bool isOps(User& user);
 
 	bool HasPass();
@@ -38,8 +39,6 @@ class Channel {
 	std::string getTopic() const { return _topic; }
 
 	void setTopic(std::string& topic) { _topic = topic; }
-
-	void broadcast(std::string& msg);
 };
 
 #endif
