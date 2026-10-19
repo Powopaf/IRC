@@ -46,3 +46,15 @@ bool Channel::hasOperator(const User& user) const {
 bool Channel::HasPass() {
 	return !pass.empty();
 }
+
+bool Channel::isOps(User &user) {
+	for (size_t i = 0; i < _operators.size(); i++) {
+		if (_operators[i]->getFd() == user.getFd())
+			return true;
+	}
+	return false;
+}
+
+void Channel::broadcast(std::string& msg) {
+	
+}
