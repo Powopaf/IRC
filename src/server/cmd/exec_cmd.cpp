@@ -62,7 +62,7 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args, Serv
 			serv.sendResponse("You are already registered\r\n");
 		else if (cmd == "NICK")
 			serv.handleNick(args);
-		else if (cmd == "PRIVMSG")
+		else if (cmd == "PRIVMSG" || cmd == "MSG")
 			serv.privmsg(args);
 		else if (cmd == "KICK")
 			serv.kick(args);

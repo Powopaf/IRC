@@ -42,7 +42,10 @@ public:
 	void						sendMessage(std::string response, int fd);
 	int							_getUF() { return (uf); }
 	User&						getUser(int fd) { return _users[fd]; }
+	User*						getUserP(int fd) { return &_users[fd]; };
 	int							findChannel(std::string name);
+	void						sendToChannel(Channel *ch, std::string response, User& excluded_sender);
+	Channel* 					getChannel(std::string& channel_name) const;
 	//Executing
 
 	void						handlePasswordAuth(std::vector<std::string> args); 

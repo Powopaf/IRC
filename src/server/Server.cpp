@@ -53,5 +53,29 @@ int Server::findChannel(std::string name) {
 void Server::broadcast(Channel &channel, std::string &msg) {
 	for (size_t i = 0; i < channel.getMembers().size(); i++) {
 		sendMessage(msg, channel.getMembers()[i]->getFd());
+}
+
+Channel* Server::getChannel(std::string& channel_name) const {
+	for (std::size_t i = 0; i < _channels.size(); i++) {
+		if (channel_name == _channels[i]->getName())
+			return (_channels[i]);
+	}
+	return (NULL);
+}
+
+void Server::sendToChannel(Channel *ch, std::string response, User& excluded_sender){
+	std::vector<User *> users = ch->getUsers();
+
+	for (std::size_t i = 0; i < users.size(); ++i) {
+		if (users[i] == NULL) {
+			std::cerr << "[WARN] sendToChannel: NULL client pointer at index " << i << std::endl;
+			continue;
+		}
+		if (users[i]->getFd() == excluded_sender.getFd())
+			continue;
+		int fd = users[i]->getFd();
+		int status = send(fd, response.c_str(), response.length(), 0);
+		if (status == -1)
+			std::cerr << "send() ERROR: failed to send reponse to socket_fd: " << fd << std::endl;
 	}
 }

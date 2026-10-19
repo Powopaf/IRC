@@ -1,5 +1,5 @@
 CC = c++
-CFLAGS =  -Wall -Wextra -Werror -MMD -MP -std=c++98
+CFLAGS = -Wall -Wextra -Werror -MMD -MP -std=c++98
 NAME = ircserv
 LIBS =
 
@@ -21,12 +21,12 @@ SRC = ./src/main.cpp \
 	  
 
 OBJ = $(addprefix .obj/,$(SRC:.cpp=.o))
-DEP = $(addprefix .obj/,$(SRC:.cpp=.d))
+DEP = $(OBJ:.o=.d)
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) -o $(NAME) $+ $(LIBS)
+	$(CC) -o $@ $^ $(LIBS)
 
 .obj/%.o: %.cpp
 	@mkdir -p $(dir $@)
