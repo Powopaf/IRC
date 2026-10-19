@@ -53,6 +53,7 @@ int Server::findChannel(std::string name) {
 void Server::broadcast(Channel &channel, std::string &msg) {
 	for (size_t i = 0; i < channel.getMembers().size(); i++) {
 		sendMessage(msg, channel.getMembers()[i]->getFd());
+	}
 }
 
 Channel* Server::getChannel(std::string& channel_name) const {
