@@ -1,5 +1,7 @@
 #include "../../../inc/server/Server.hpp"
 #include <cctype>
+#include <iostream>
+#include <stdexcept>
 
 static std::string extract_cmd(const std::string& msg, size_t& i) {
 	std::string cmd;

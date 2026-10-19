@@ -1,13 +1,8 @@
 #include "../../inc/server/Server.hpp"
 #include <cstddef>
-// #include <exception>
-// #include <iostream>
-// #include <ostream>
-// #include <sys/socket.h>
-// #include <sys/types.h>
-// #include <unistd.h>
-// #include <vector>
-// #include <poll.h>
+#include <iostream>
+#include <stdio.h>
+#include <sys/socket.h>
 
 
 // Main server loop. Calls poll() on all registered sockets and handles:
@@ -53,6 +48,12 @@ int Server::findChannel(std::string name) {
 	while (i < _channels.size() && _channels[i]->getName() != name)
 		i++;
 	return i >= _channels.size() ? -1 : i;
+}
+
+void Server::broadcast(Channel &channel, std::string &msg) {
+	for (size_t i = 0; i < channel.getMembers().size(); i++) {
+		sendMessage(msg, channel.getMembers()[i]->getFd());
+	}
 }
 
 Channel* Server::getChannel(std::string& channel_name) const {
