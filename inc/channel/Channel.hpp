@@ -38,6 +38,7 @@ class Channel {
 	bool getTopicRestrited() const { return _topicRestricted; }
 	std::string getTopic() const { return _topic; }
 	const std::vector<User*>& getUsers() const { return _members; }
+	const unsigned int getLimit() const { return _usersLimit; }
 
 	bool isUserOnChannel(User &c) const;
 
