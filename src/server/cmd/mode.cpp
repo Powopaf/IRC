@@ -1,4 +1,5 @@
 #include "../../../inc/server/Server.hpp"
+#include <cstddef>
 #include <string>
 
 static int exist(std::string name, std::vector<Channel*> ch) {
@@ -44,5 +45,18 @@ void Server::mode(std::vector<std::string> args) {
 		//error not channel operator
 		return;
 	}
-	// parse mode and do the right change
+	std::string mode = args[0];
+	bool add = true;
+	for (size_t i = 0; i < mode.size(); i++) {
+		char m = mode[i];
+		if (m == '+') {
+			add = true;
+			continue;
+		}
+		if (m == '-') {
+			add = false;
+			continue;
+		}
+		bool needsparam = (m == 'o') || (add && (m == 'k' || m == 'l'));
+	}
 }
