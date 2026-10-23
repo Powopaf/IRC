@@ -25,11 +25,35 @@ Channel& Channel::operator=(const Channel& other) {
 }
 
 void Channel::addUser(User& user) {
+	if (hasMember(user))
+		return;
 	_members.push_back(&user);
 }
 
 void Channel::addOps(User& user) {
+	if (hasOperator(user))
+		return;
 	_operators.push_back(&user);
+}
+
+void Channel::addOps(std::string &nick) {
+	for (size_t i = 0; i < getUsers().size(); i++) {
+		if (getUsers()[i]->getNick() == nick) {
+			if (hasOperator(*getUsers()[i]))
+				return;
+			_operators.push_back(getUsers()[i]);
+			return;
+		}
+	}
+}
+
+void Channel::rmOps(std::string &nick) {
+	for (std::vector<User *>::iterator it = _operators.begin(); it != _operators.end(); ++it) {
+		if ((*it)->getNick() == nick) {
+			_operators.erase(it);
+			return;
+		}
+	}
 }
 
 void Channel::removeUser(User& user) {
@@ -53,6 +77,14 @@ bool Channel::hasMember(const User& user) const {
 			std::cout << "meowmeow" << std::endl;
 			return true;
 		}
+	return false;
+}
+
+bool Channel::hasMember(const std::string& nick) const {
+	for (size_t i = 0; i < _members.size(); i++) {
+		if (_members[i]->getNick() == nick)
+			return true;
+	}
 	return false;
 }
 

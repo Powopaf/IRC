@@ -1,6 +1,11 @@
 #include "../../../inc/server/Server.hpp"
+#include <cerrno>
+#include <climits>
 #include <cstddef>
+#include <cstdlib>
+#include <stdexcept>
 #include <string>
+#include <unistd.h>
 
 static int exist(std::string name, std::vector<Channel*> ch) {
 	for (size_t i = 0; i < ch.size(); i++) {
@@ -31,17 +36,42 @@ static void key(bool add, std::string& p, Channel& ch) {
 	if (!add) {
 		ch.setKey(std::string());
 	}
+	ch.setKey(p);
 }
 
-static void ops(bool add, std::string& p, Channel& ch) {
-
+static int ops(bool add, std::string& p, Channel& ch) {
+	if (!ch.hasMember(p)) {
+		return 2;
+	}
+	add ? ch.addOps(p) : ch.rmOps(p);
+	return 0;
 }
 
-static void limit(bool add, std::string& p, Channel& ch) {
-
+static unsigned long toUI(const std::string& v) {
+	char *end;
+	if (v.empty())
+		throw std::invalid_argument("");
+	errno = 0;
+	unsigned long number = std::strtoul(v.c_str(), &end, 10);
+	if (*end != '\0')
+		throw std::invalid_argument("");
+	if (errno == ERANGE || number > UINT_MAX)
+		throw std::out_of_range("");
+	return static_cast<unsigned int>(number);
 }
 
-static bool apply(char m, bool add, std::string& p, Channel& ch) {
+static int limit(bool add, std::string& p, Channel& ch) {
+	try {
+	add ? ch.setLimit(toUI(p)) : ch.setLimit(0);
+	} catch (const std::string e) {
+		(void)e;
+		return 3;
+	}
+	return 0;
+}
+
+static int apply(char m, bool add, std::string& p, Channel& ch) {
+	int err = 0;
 	switch (m) {
 		case 'i':
 			ch.setInviteONly(add);
@@ -53,15 +83,16 @@ static bool apply(char m, bool add, std::string& p, Channel& ch) {
 			key(add, p, ch);
 			break;
 		case 'o':
-			ops(add, p, ch);
+			err = ops(add, p, ch);
 			break;
 		case 'l':
-			limit(add, p, ch);
+			err = limit(add, p, ch);
 			break;
 		default:
-			return false;
+			err = 1;
+			break;
 	};
-	return true;
+	return err;
 }
 
 void Server::mode(std::vector<std::string> args) {
@@ -104,9 +135,20 @@ void Server::mode(std::vector<std::string> args) {
 		}
 		else if (m == 'k' && !add && pidx < args.size())
 			pidx++; // "-k oldkey"
-		if (!apply(m, add, args[pidx], *_channels[ci])) {
-			sendResponse(""); // Unknown mode char
-			continue;
+		int err = apply(m, add, args[pidx], *_channels[ci]);
+		switch (err) {
+			case 1:
+				sendResponse(""); //error unknown mode char
+				break;
+			case 2:
+				sendResponse(""); //error target nick not on channel
+				break;
+			case 3:
+				sendResponse(""); // error 
+				break;
+			case 0:
+				sendResponse(""); // success
+				break;
 		}
 	}
 }
