@@ -15,7 +15,6 @@ class Channel {
 		bool _inviteOnly;
 		bool _topicRestricted;
 		unsigned int _usersLimit; // is = 0 then there is no limit
-		std::string pass;
 		Channel();
 	public:
 	Channel(std::string name);
@@ -28,13 +27,13 @@ class Channel {
 	void removeUser(User& user);
 	bool isOps(User& user);
 
-	bool HasPass();
+	bool hasKey() const;
 	std::string getName() const { return _name; }
 	const std::vector<User *>& getMembers() const { return _members; }
 	bool hasMember(const User& user) const;
 	bool hasOperator(const User& user) const;
 	bool isInviteOnly() const { return _inviteOnly; }
-	std::string getPass() const { return pass; }
+	std::string getKey() const { return _key; }
 	bool getTopicRestrited() const { return _topicRestricted; }
 	std::string getTopic() const { return _topic; }
 	const std::vector<User*>& getUsers() const { return _members; }
@@ -43,6 +42,9 @@ class Channel {
 	bool isUserOnChannel(User &c) const;
 
 	void setTopic(std::string& topic) { _topic = topic; }
+	void setInviteONly(bool invite) { _inviteOnly = invite; }
+	void setTopicRestricted(bool restricted) { _topicRestricted = restricted; }
+	void setKey(const std::string& key) { _key = key; }
 };
 
 #endif

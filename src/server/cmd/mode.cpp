@@ -17,14 +17,51 @@ static std::string modeString(Channel& channel, bool isONch)
 		modes += 'i';
 	if (channel.getTopicRestrited())
 		modes += 't';
-	if (!channel.HasPass()) {
+	if (!channel.hasKey()) {
 		modes += 'k'; 
-		params += " " + channel.getPass();
+		params += " " + channel.getKey();
 	}
 	if (channel.getLimit() > 0) { 
 		modes += 'l'; params += " " + (isONch ? std::to_string(channel.getLimit()) : "*"); 
 	}
 	return modes + params;
+}
+
+static void key(bool add, std::string& p, Channel& ch) {
+	if (!add) {
+		ch.setKey(std::string());
+	}
+}
+
+static void ops(bool add, std::string& p, Channel& ch) {
+
+}
+
+static void limit(bool add, std::string& p, Channel& ch) {
+
+}
+
+static bool apply(char m, bool add, std::string& p, Channel& ch) {
+	switch (m) {
+		case 'i':
+			ch.setInviteONly(add);
+			break;
+		case 't':
+			ch.setTopicRestricted(add);
+			break;
+		case 'k':
+			key(add, p, ch);
+			break;
+		case 'o':
+			ops(add, p, ch);
+			break;
+		case 'l':
+			limit(add, p, ch);
+			break;
+		default:
+			return false;
+	};
+	return true;
 }
 
 void Server::mode(std::vector<std::string> args) {
@@ -47,6 +84,7 @@ void Server::mode(std::vector<std::string> args) {
 	}
 	std::string mode = args[0];
 	bool add = true;
+	size_t pidx = 1;
 	for (size_t i = 0; i < mode.size(); i++) {
 		char m = mode[i];
 		if (m == '+') {
@@ -57,6 +95,18 @@ void Server::mode(std::vector<std::string> args) {
 			add = false;
 			continue;
 		}
-		bool needsparam = (m == 'o') || (add && (m == 'k' || m == 'l'));
+		if ((m == 'o') || (add && (m == 'k' || m == 'l'))) {
+			if (pidx >= args.size()) {
+				sendResponse(""); // erorr not enought param
+				continue;
+			}
+			pidx++;
+		}
+		else if (m == 'k' && !add && pidx < args.size())
+			pidx++; // "-k oldkey"
+		if (!apply(m, add, args[pidx], *_channels[ci])) {
+			sendResponse(""); // Unknown mode char
+			continue;
+		}
 	}
 }

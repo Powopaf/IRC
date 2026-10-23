@@ -20,6 +20,7 @@ Channel& Channel::operator=(const Channel& other) {
 		return *this;
 	this->_members = other._members;
 	this->_name = other._name;
+	this->_key = other._key;
 	return *this;
 }
 
@@ -64,8 +65,8 @@ bool Channel::hasOperator(const User& user) const {
 	return false;
 }
 
-bool Channel::HasPass() {
-	return !pass.empty();
+bool Channel::hasKey() const {
+	return !_key.empty();
 }
 
 bool Channel::isOps(User &user) {
