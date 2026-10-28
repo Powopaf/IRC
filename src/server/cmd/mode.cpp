@@ -3,6 +3,7 @@
 #include <climits>
 #include <cstddef>
 #include <cstdlib>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <unistd.h>
@@ -15,6 +16,12 @@ static int exist(std::string name, std::vector<Channel*> ch) {
 	return -1;
 }
 
+static std::string toString(unsigned int value) {
+    std::ostringstream stream;
+    stream << value;
+    return stream.str();
+}
+
 static std::string modeString(Channel& channel, bool isONch)
 {
 	std::string modes = "+", params;
@@ -22,21 +29,18 @@ static std::string modeString(Channel& channel, bool isONch)
 		modes += 'i';
 	if (channel.getTopicRestrited())
 		modes += 't';
-	if (!channel.hasKey()) {
+	if (channel.hasKey()) {
 		modes += 'k'; 
-		params += " " + channel.getKey();
+		params += " *";
 	}
 	if (channel.getLimit() > 0) { 
-		modes += 'l'; params += " " + (isONch ? std::to_string(channel.getLimit()) : "*"); 
+		modes += 'l'; params += " " + (isONch ? toString(channel.getLimit()) : "*"); 
 	}
 	return modes + params;
 }
 
 static void key(bool add, std::string& p, Channel& ch) {
-	if (!add) {
-		ch.setKey(std::string());
-	}
-	ch.setKey(p);
+	ch.setKey(add ? p : std::string());
 }
 
 static int ops(bool add, std::string& p, Channel& ch) {
@@ -63,7 +67,7 @@ static unsigned long toUI(const std::string& v) {
 static int limit(bool add, std::string& p, Channel& ch) {
 	try {
 	add ? ch.setLimit(toUI(p)) : ch.setLimit(0);
-	} catch (const std::string e) {
+	} catch (const std::exception& e) {
 		(void)e;
 		return 3;
 	}
@@ -97,25 +101,33 @@ static int apply(char m, bool add, std::string& p, Channel& ch) {
 
 void Server::mode(std::vector<std::string> args) {
 	if (args.size() < 1) {
-		//error not enought param
+		sendResponse(":" + _hostname + " 461 " + _users[uf].getNick()
+			+ " MODE :Not enough parameters\r\n");
 		return;
 	}
 	int ci = exist(args[0], _channels);
 	if (ci == -1) {
-		// error channel does not exist
+		sendResponse(":" + _hostname + " 403 " + _users[uf].getNick()
+			+ " " + args[0] + " :No such channel\r\n");
 		return;
 	}
 	if (args.size() == 1) {
 		sendResponse(modeString(*_channels[ci], _channels[ci]->hasMember(_users[uf])));
 		return;
 	}
-	if (!_channels[ci]->isOps(_users[uf])) {
-		//error not channel operator
+	if (!_channels[ci]->hasMember(_users[uf])) {
+		sendResponse(":" + _hostname + " 442 " + _users[uf].getNick()
+			+ " " + args[0] + " :You're not on that channel\r\n");
 		return;
 	}
-	std::string mode = args[0];
+	if (!_channels[ci]->isOps(_users[uf])) {
+		sendResponse(":" + _hostname + " 482 " + _users[uf].getNick()
+			+ " " + args[0] + " :You're not channel operator\r\n");
+		return;
+	}
+	std::string mode = args[1];
 	bool add = true;
-	size_t pidx = 1;
+	size_t pidx = 2;
 	for (size_t i = 0; i < mode.size(); i++) {
 		char m = mode[i];
 		if (m == '+') {
@@ -126,28 +138,40 @@ void Server::mode(std::vector<std::string> args) {
 			add = false;
 			continue;
 		}
-		if ((m == 'o') || (add && (m == 'k' || m == 'l'))) {
+		std::string parameter;
+		if (m == 'o' || (add && (m == 'k' || m == 'l')) || (!add && m == 'k')) {
 			if (pidx >= args.size()) {
-				sendResponse(""); // erorr not enought param
-				continue;
+				sendResponse(":" + _hostname + " 461 " + _users[uf].getNick()
+					+ " MODE :Not enough parameters\r\n");
+				return;
 			}
-			pidx++;
+			parameter = args[pidx++];
 		}
-		else if (m == 'k' && !add && pidx < args.size())
-			pidx++; // "-k oldkey"
-		int err = apply(m, add, args[pidx], *_channels[ci]);
+		int err = apply(m, add, parameter, *_channels[ci]);
 		switch (err) {
 			case 1:
-				sendResponse(""); //error unknown mode char
+				sendResponse(":" + _hostname + " 472 " + _users[uf].getNick()
+					+ " " + std::string(1, m) + " :is unknown mode char to me\r\n");
 				break;
 			case 2:
-				sendResponse(""); //error target nick not on channel
+				sendResponse(":" + _hostname + " 441 " + _users[uf].getNick()
+					+ " " + parameter + " " + args[0] + " :They aren't on that channel\r\n");
 				break;
 			case 3:
-				sendResponse(""); // error 
+				sendResponse(":" + _hostname + " 696 " + _users[uf].getNick()
+					+ " " + args[0] + " " + std::string(1, m)
+					+ " :Invalid mode parameter\r\n");
 				break;
 			case 0:
-				sendResponse(""); // success
+				{
+					std::string message = ":" + _users[uf].getFullId()
+						+ " MODE " + args[0] + " " + (add ? "+" : "-")
+						+ std::string(1, m);
+					if (!parameter.empty() && (m == 'k' || m == 'l'))
+						message += " " + parameter;
+					message += "\r\n";
+					broadcast(*_channels[ci], message);
+				}
 				break;
 		}
 	}
