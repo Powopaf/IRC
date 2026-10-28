@@ -58,13 +58,13 @@ void Server::join(std::vector<std::string> args) {
 		if (a == -1) {
 			add_Channel(channels_name[i], _users[uf]);
 		}
-		else if (_channels[a]->HasPass()
-			&& (i >= keys.size() || _channels[a]->getPass() != keys[i])) {
+		else if (_channels[a]->hasKey()
+			&& (i >= keys.size() || _channels[a]->getKey() != keys[i])) {
 			sendResponse(":" + _hostname + " 475 " + _users[uf].getNick()
 				+ " " + channels_name[i] + " :Cannot join channel (+k)\r\n");
 			return;
 		}
-		else if (_channels[a]->HasPass())
+		else if (_channels[a]->hasKey())
 			add_User_Channel(channels_name[i], keys[i], _users[uf]);
 		else
 			add_User_Channel(channels_name[i], _users[uf]);
