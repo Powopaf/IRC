@@ -55,6 +55,7 @@ void Server::shutdown(void) {
 		close(_pollFds[i].fd);
 	_pollFds.clear();
 
+
     close (_serverFd);
 }
 
