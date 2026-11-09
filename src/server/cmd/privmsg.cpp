@@ -28,7 +28,7 @@ void Server::privmsg(std::vector<std::string> args) {
 
 	for (std::size_t i = 0; i < receivers.size(); i++){
 		std::string& target = receivers[i];
-		std::string fullmsg = ":" + _users[uf].getFullId() + " MSG " + target + " :" + msg + "\r\n";
+		std::string fullmsg = ":" + _users[uf].getFullId() + " PRIVMSG " + target + " :" + msg + "\r\n";
 
 		if (fullmsg.length() > 512){
 			sendResponse(":" + _hostname + " NOTICE " + _users[uf].getNick() + " :Input line too long (max 512 bytes)\r\n");

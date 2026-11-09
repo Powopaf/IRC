@@ -26,18 +26,39 @@ void Server::startServ(void) {
 					char buffer[512];
 					ssize_t n = recv(uf, buffer, sizeof(buffer), 0);
 					if (n > 0) {
+						std::cout << "RAW RECV (" << n << " bytes): "
+							<< std::string(buffer, n) << std::endl;
 						_users[uf].setBuf(std::string(buffer, n));
 						try {
-						handleMessage();
+							handleMessage();
 						} catch (const std::exception& e) {
 							std::cerr << e.what() << std::endl;
 						}
 					}
-					else if (n <= 0) {
+					else {
 						handleDisconnection();
-						// return;
+						// _pollFds was modified (erase), so stop iterating this round
+						break;
 					}
 				}
+		// 		else {
+		// 			char buffer[512];
+		// 			ssize_t n = recv(uf, buffer, sizeof(buffer), 0);
+		// 			std::cout << "RAW RECV (" << n << " bytes): "
+        //   << std::string(buffer, n) << std::endl;
+		// 			if (n > 0) {
+		// 				_users[uf].setBuf(std::string(buffer, n));
+		// 				try {
+		// 				handleMessage();
+		// 				} catch (const std::exception& e) {
+		// 					std::cerr << e.what() << std::endl;
+		// 				}
+		// 			}
+		// 			else if (n <= 0) {
+		// 				handleDisconnection();
+		// 				// return;
+		// 			}
+		// 		}
 			}
 		}
 	}

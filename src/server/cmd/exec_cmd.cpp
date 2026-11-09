@@ -46,15 +46,27 @@ static std::vector<std::string> extract_args(const std::string& msg, size_t i) {
 }
 
 static void exec_msg(const std::string& cmd, std::vector<std::string> args, Server& serv) {
+	std::cout<< "cmd is: " << cmd << std::endl;
+	
 	if(!serv.getUser(serv._getUF()).getLogged()) {
+		if (cmd == "JOIN")
+			return ; //for now...
 		if (cmd == "PASS")
 			serv.handlePasswordAuth(args);
 		else if (cmd == "NICK")
 			serv.handleNick(args);
 		else if (cmd == "USER")
 			serv.handleUserName(args);
+		else if (cmd == "CAP") {
+    		if (!args.empty() && args[0] == "LS")
+        		serv.sendResponse(":" + serv.gethostname() + " CAP * LS :\r\n");
+    		else if (!args.empty() && args[0] == "REQ")
+        		serv.sendResponse(":" + serv.gethostname() + " CAP * NAK :" + (args.size() > 1 ? args[1] : "") + "\r\n");
+		}
+		// else if (cmd == "CAP")
+		// 	serv.sendResponse("localhost CAP * LS :\r\n");
 		else
-			serv.sendResponse("Error: Cant send commands other than PASS, NICK and USER; you have not yet registered\r\n");
+			serv.sendResponse(":0.0.0.0 451 * :You have not registered\r\n");
 		serv.registerAttempt();
 	}
 	else
@@ -74,23 +86,49 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args, Serv
 			serv.mode(args);
 		else if (cmd == "JOIN")
 			serv.join(args);
-		else if (cmd == "PRIVMSG")
-			serv.privmsg(args);
+		// else if (cmd == "PRIVMSG")
+		// 	serv.privmsg(args);
+		else if (cmd == "PING")
+			serv.sendResponse("PONG :ft_irc");
 		else
 			throw std::invalid_argument("Command does not exist");
 }
 
 // TODO: add a try catch here
 
+// void Server::handleMessage() {
+// 	if (!_users[uf].hasCmd())
+// 		return;
+// 	std::string msg = _users[uf].getCmd();
+// 	size_t i = 0;
+// 	if (msg.size() > 512)
+// 		throw std::length_error("Message is too long");
+// 	std::string cmd = extract_cmd(msg, i);
+// 	std::vector<std::string> args = extract_args(msg, i);
+// 	std::cout << "Received data from fd " << uf << ": " << msg << std::endl;
+// 	exec_msg(cmd, args, *this);
+// }
+
 void Server::handleMessage() {
-	if (!_users[uf].hasCmd())
-		return;
-	std::string msg = _users[uf].getCmd();
-	size_t i = 0;
-	if (msg.size() > 512)
-		throw std::length_error("Message is too long");
-	std::string cmd = extract_cmd(msg, i);
-	std::vector<std::string> args = extract_args(msg, i);
-	std::cout << "Received data from fd " << uf << ": " << msg << std::endl;
-	exec_msg(cmd, args, *this);
+	// Process every complete line currently sitting in this user's buffer.
+	// irssi often sends several commands in one packet (e.g. "CAP LS 302\r\nJOIN :\r\n").
+	while (_users.count(uf) && _users[uf].hasCmd()) {
+		std::string msg = _users[uf].getCmd();
+
+		if (msg.empty())
+			continue; // blank line, ignore it
+
+		try {
+			size_t i = 0;
+			if (msg.size() > 512)
+				throw std::length_error("Message is too long");
+			std::string cmd = extract_cmd(msg, i);
+			std::vector<std::string> args = extract_args(msg, i);
+			std::cout << "Received data from fd " << uf << ": " << msg << std::endl;
+			exec_msg(cmd, args, *this);
+		} catch (const std::exception& e) {
+			// One bad line must not stop the remaining lines from being processed
+			std::cerr << "[WARN] fd " << uf << ": " << e.what() << std::endl;
+		}
+	}
 }

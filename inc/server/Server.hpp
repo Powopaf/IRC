@@ -41,6 +41,7 @@ public:
 	void						sendResponse(std::string response);
 	void						sendMessage(std::string response, int fd);
 	int							_getUF() { return (uf); }
+	std::string					gethostname() {return _hostname;}
 	User&						getUser(int fd) { return _users[fd]; }
 	User*						getUserP(int fd) { return &_users[fd]; };
 	int							findChannel(std::string name);
