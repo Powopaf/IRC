@@ -1,4 +1,6 @@
 #include "../../../inc/server/Server.hpp"
+#include <cctype>
+#include <cstddef>
 
 void    Server::handlePasswordAuth(std::vector<std::string> args){
     if (args.size() != 1){
@@ -12,14 +14,36 @@ void    Server::handlePasswordAuth(std::vector<std::string> args){
     _users[uf].setGotPass();
 }
 
+static bool checkNick(std::string nick) {
+	if (nick.size() > 9)
+		return false;
+	for (size_t i = 0; i < 10; i++) {
+		if (!std::isalpha(nick[i]))
+			return false;
+	}
+	return true;
+}
+
 void    Server::handleNick(std::vector<std::string> args){
-    if (args.size() != 1){
-        sendResponse("Error: NICK needs one argument only\r\n");
+	std::string client = _users[uf].getNick().empty() ? "*" : _users[uf].getNick();
+    if (args.empty()) {
+        sendResponse(":" + _hostname + " 431 " + client + " :No nickname given\r\n");
         return;
     }
+    if (args.size() != 1){
+        sendResponse(":" + _hostname + " 461 " + client + " NICK :Not enough parameters\r\n");
+        return;
+    }
+	if (!checkNick(args[0])) {
+		sendResponse(":" + _hostname + " 432 " + client + " " + args[0]
+			+ " :Erroneous nickname\r\n");
+		return;
+	}
 	for (std::map<int, User>::iterator i = _users.begin(); i != _users.end(); i++) {
 		if (i->first != uf && i->second.getNick() == args[0]) {
-			//send resposne nick already in use
+			sendResponse(":" + _hostname + " 433 " + client + " " + args[0]
+				+ " :Nickname is already in use\r\n");
+			return;
 		}
 	}
     _users[uf].setNick(args[0]);
