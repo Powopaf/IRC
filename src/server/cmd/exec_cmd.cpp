@@ -87,7 +87,7 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args, Serv
 		// else if (cmd == "PRIVMSG")
 		// 	serv.privmsg(args);
 		else if (cmd == "PING")
-			serv.sendResponse("PONG :ft_irc");
+			serv.sendResponse("PONG :" + serv.gethostname() + "\r\n");
 		else
 			throw std::invalid_argument("Command does not exist");
 }

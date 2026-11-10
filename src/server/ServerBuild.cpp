@@ -61,6 +61,9 @@ void Server::shutdown(void) {
 	_pollFds.clear();
 	std::vector<pollfd>().swap(_pollFds);
 
+	// std::map<int, User>::iterator it;
+	// for (it = _users.begin(); it != _users.end(); it++){
+	// 	i
 	for (std::map<int, User>::iterator it = _users.begin();
 		it != _users.end(); ++it) {
 		if (it->second.getFd() == uf) {
