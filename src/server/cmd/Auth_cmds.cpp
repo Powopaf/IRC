@@ -1,6 +1,5 @@
 #include "../../../inc/server/Server.hpp"
 #include <cctype>
-#include <cstddef>
 
 void    Server::handlePasswordAuth(std::vector<std::string> args){
     if (args.size() != 1){
@@ -14,12 +13,20 @@ void    Server::handlePasswordAuth(std::vector<std::string> args){
     _users[uf].setGotPass();
 }
 
-static bool checkNick(std::string nick) {
-	if (nick.size() > 9)
+static bool checkNick(const std::string& nick) {
+	if (nick.empty() || nick.size() > 9)
 		return false;
-	for (size_t i = 0; i < 10; i++) {
-		if (!std::isalpha(nick[i]))
+	const std::string special = "[]\\`_^{}|";
+	for (std::size_t i = 0; i < nick.size(); ++i) {
+		unsigned char c = static_cast<unsigned char>(nick[i]);
+		bool letter = std::isalpha(c) != 0;
+		bool nick_special = special.find(nick[i]) != std::string::npos;
+		if (i == 0) {
+			if (!letter && !nick_special)
+				return false;
+		} else if (!letter && !std::isdigit(c) && !nick_special && nick[i] != '-') {
 			return false;
+		}
 	}
 	return true;
 }
