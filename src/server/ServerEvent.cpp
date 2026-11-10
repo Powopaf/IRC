@@ -34,13 +34,28 @@ void Server::handleDisconnection(void){
 }
 
 void Server::_rmClient() {
+	for (std::size_t i = 0; i < _channels.size(); ++i) {
+		for (std::size_t j = 0; j < _channels[i]->getMembers().size(); ++j) {
+			if (_channels[i]->getMembers()[j] == &_users[uf]) {
+				_channels[i]->removeUser(_users[uf]);
+				break;
+			}
+		}
+	}
 	for (std::size_t i = 0; i < _pollFds.size(); ++i) {
 		if (_pollFds[i].fd == uf) {
 			_pollFds.erase(_pollFds.begin() + i);
 			break;
 			}
 		}
-	_users.erase(uf);
+	for (std::map<int, User>::iterator it = _users.begin();
+		it != _users.end(); ++it) {
+		if (it->second.getFd() == uf) {
+			_users.erase(it);
+			break;
+		}
+	}
+	
 }
 
 void Server::sendResponse(std::string response) {

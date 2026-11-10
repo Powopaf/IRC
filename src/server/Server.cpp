@@ -37,7 +37,6 @@ void Server::startServ(void) {
 					}
 					else {
 						handleDisconnection();
-						// _pollFds was modified (erase), so stop iterating this round
 						break;
 					}
 				}

@@ -22,7 +22,7 @@ void    Server::handleNick(std::vector<std::string> args){
 }
 
 void Server::handleUserName(std::vector<std::string> args) {
-    if (args.size() < 4) {
+    if (args.size() < 1) {
         sendResponse(":" + _hostname + " 461 * USER :Not enough parameters\r\n");
         return;
     }

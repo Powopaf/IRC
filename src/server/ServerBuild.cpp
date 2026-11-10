@@ -50,11 +50,21 @@ Server::Server(int port, std::string password) :_port(port), uf(0), _password(pa
 }
 
 void Server::shutdown(void) {
+	for (std::size_t i = 0; i < _channels.size(); ++i) {
+		delete _channels[i];
+	}
+	_channels.clear();
+	std::vector<Channel*>().swap(_channels);
 
 	for (std::size_t i = 0; i < _pollFds.size(); ++i)
 		close(_pollFds[i].fd);
 	_pollFds.clear();
+	std::vector<pollfd>().swap(_pollFds);
 
+	// std::map<int, User>::iterator it;
+	// for (it = _users.begin(); it != _users.end(); it++){
+	// 	i
+	_users.clear();
 
     close (_serverFd);
 }
