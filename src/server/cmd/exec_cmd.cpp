@@ -63,8 +63,6 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args, Serv
     		else if (!args.empty() && args[0] == "REQ")
         		serv.sendResponse(":" + serv.gethostname() + " CAP * NAK :" + (args.size() > 1 ? args[1] : "") + "\r\n");
 		}
-		// else if (cmd == "CAP")
-		// 	serv.sendResponse("localhost CAP * LS :\r\n");
 		else
 			serv.sendResponse(":0.0.0.0 451 * :You have not registered\r\n");
 		serv.registerAttempt();

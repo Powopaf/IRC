@@ -17,6 +17,11 @@ void    Server::handleNick(std::vector<std::string> args){
         sendResponse("Error: NICK needs one argument only\r\n");
         return;
     }
+	for (std::map<int, User>::iterator i = _users.begin(); i != _users.end(); i++) {
+		if (i->first != uf && i->second.getNick() == args[0]) {
+			//send resposne nick already in use
+		}
+	}
     _users[uf].setNick(args[0]);
     _users[uf].setGotNick();
 }
