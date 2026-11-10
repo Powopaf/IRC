@@ -64,6 +64,13 @@ void Server::shutdown(void) {
 	// std::map<int, User>::iterator it;
 	// for (it = _users.begin(); it != _users.end(); it++){
 	// 	i
+	for (std::map<int, User>::iterator it = _users.begin();
+		it != _users.end(); ++it) {
+		if (it->second.getFd() == uf) {
+			_users.erase(it);
+			break;
+		}
+	}
 	_users.clear();
 
     close (_serverFd);

@@ -24,7 +24,7 @@ private:
 	struct sockaddr_in			_serverAddress;
 	std::string					_hostname;
 	std::vector<struct pollfd>	_pollFds; // -> active socket list
-	std::map<int, User>			_users; 
+	std::map<int, User>			_users;
 	std::vector<Channel*>		_channels; 
 public:
 	Server(int port, std::string password);
