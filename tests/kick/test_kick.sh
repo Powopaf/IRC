@@ -23,12 +23,24 @@ wait_for() {
 	done
 	echo "Timed out waiting for $text" >&2; cat "$file" "$tmp/server" >&2; return 1
 }
+wait_for_count() {
+	file=$1; text=$2; count=$3; i=0
+	while [ "$i" -lt 50 ]; do
+		actual=$(grep -Fc "$text" "$file" 2>/dev/null || true)
+		[ "$actual" -ge "$count" ] && return 0
+		i=$((i + 1)); sleep .1
+	done
+	echo "Timed out waiting for $count occurrences of $text" >&2; cat "$file" "$tmp/server" >&2; return 1
+}
 wait_for "$tmp/server" 'listening on port'
 mkfifo "$tmp/alice.in"
 nc 127.0.0.1 "$port" <"$tmp/alice.in" >"$tmp/alice.out" & alice_pid=$!
 exec 3>"$tmp/alice.in"
 printf 'PASS testpass\r\nNICK Alice\r\nUSER alice 0 * :Alice\r\nJOIN #kick-test\r\n' >&3
 wait_for "$tmp/alice.out" ' JOIN :#kick-test'
+printf 'KICK\r\nKICK p\r\n' >&3
+wait_for_count "$tmp/alice.out" ' 461 Alice KICK :Not enough parameters' 2
+kill -0 "$server_pid"
 mkfifo "$tmp/bob.in"
 nc 127.0.0.1 "$port" <"$tmp/bob.in" >"$tmp/bob.out" & bob_pid=$!
 exec 4>"$tmp/bob.in"

@@ -74,5 +74,11 @@ void Server::join(std::vector<std::string> args) {
 		const std::vector<User *>& members = _channels[channel_index]->getMembers();
 		for (size_t member = 0; member < members.size(); member++)
 			sendMessage(message, members[member]->getFd());
+		if (_channels[i]->getTopic().empty())
+			sendResponse(":" + _hostname + " 331 " + _users[uf].getNick()
+				+ " " + args[0] + " :No topic is set\r\n");
+		else
+			sendResponse(":" + _hostname + " 332 " + _users[uf].getNick()
+				+ " " + args[0] + " :" + _channels[i]->getTopic() + "\r\n");
 	}
 }
