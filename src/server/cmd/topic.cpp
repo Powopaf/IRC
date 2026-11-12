@@ -24,7 +24,7 @@ void Server::topic(std::vector<std::string> args) {
 		if (_channels[i]->getTopicRestrited() && _users[uf].getAdmin()) {
 			_channels[i]->setTopic(args[1]);
 		}
-		else if (_channels[i]->getTopicRestrited()) {
+		else if (_channels[i]->getTopicRestrited() && !_channels[i]->isOps(_users[uf])) {
 			sendResponse(":" + _hostname + " 482 " + _users[uf].getNick()
 				+ " " + args[0] + " :You're not channel operator\r\n");
 			return;
