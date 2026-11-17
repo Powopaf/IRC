@@ -74,7 +74,6 @@ void Channel::removeUser(User& user) {
 bool Channel::hasMember(const User& user) const {
 	for (size_t i = 0; i < _members.size(); i++)
 		if (_members[i]->getFd() == user.getFd()){
-			std::cout << "meowmeow" << std::endl;
 			return true;
 		}
 	return false;
@@ -90,8 +89,7 @@ bool Channel::hasMember(const std::string& nick) const {
 
 bool Channel::hasOperator(const User& user) const {
 	for (size_t i = 0; i < _operators.size(); i++)
-		if (_operators[i]->getFd() == user.getFd()){
-			std::cout << "meowmeow" << std::endl;	
+		if (_operators[i]->getFd() == user.getFd()){	
 			return true;
 		}
 	return false;

@@ -53,8 +53,12 @@ void    Server::handleNick(std::vector<std::string> args){
 			return;
 		}
 	}
+    std::string old = _users[uf].getFullId();
+    bool wasLogged = _users[uf].getLogged();
     _users[uf].setNick(args[0]);
     _users[uf].setGotNick();
+    if (wasLogged)
+        sendResponse(":" + old + " NICK :" + args[0] + "\r\n");
 }
 
 void Server::handleUserName(std::vector<std::string> args) {
