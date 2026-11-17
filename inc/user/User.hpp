@@ -5,22 +5,22 @@
 
 class User{
 	private: 
-		int 				_fd;
-		bool 				_isadmin;
-		bool				_pass_received;
-		bool				_nick_received;
-		bool				_uname_received;
-		bool 				_isloggedin;
-		std::string			_nickname;
-		std::string			_username;
-		std::string			_ipv4_addr;
-		std::string			_buffer;
+		int			_fd;
+		bool		_isadmin;
+		bool		_pass_received;
+		bool		_nick_received;
+		bool		_uname_received;
+		bool		_isloggedin;
+		std::string	_nickname;
+		std::string	_username;
+		std::string	_ipv4_addr;
+		std::string	_buffer;
 	public:
 		User() : _isadmin(false), _pass_received(false), _nick_received(false), _uname_received(false), _isloggedin(false) {}
 		~User() {}
 
-		bool				hasCmd();
-		std::string			getCmd(); // test with hasCmd before using this unknow behavior else
+		bool		hasCmd();
+		std::string	getCmd(); // test with hasCmd before using this unknow behavior else
 
 		//getters
 		const std::string&	getBuf(void) const { return _buffer; }

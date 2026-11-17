@@ -1,6 +1,5 @@
 #include "../../inc/channel/Channel.hpp"
 #include <cstddef>
-#include <iostream>
 
 Channel::Channel(std::string name) {
 	_name = name;

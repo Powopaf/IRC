@@ -1,16 +1,16 @@
 #include "../../../inc/server/Server.hpp"
 #include <cctype>
 
-void    Server::handlePasswordAuth(std::vector<std::string> args){
-    if (args.size() != 1){
-        sendResponse("Error: PASS needs one argument only\r\n");
-        return;
-    }
-    if (_password != args[0]){
-        sendResponse("Error: Wrong password\r\n");
-        return;
-    }
-    _users[uf].setGotPass();
+void Server::handlePasswordAuth(std::vector<std::string> args){
+	if (args.size() != 1){
+		sendResponse("Error: PASS needs one argument only\r\n");
+		return;
+	}
+	if (_password != args[0]){
+		sendResponse("Error: Wrong password\r\n");
+		return;
+	}
+	_users[uf].setGotPass();
 }
 
 static bool checkNick(const std::string& nick) {
@@ -31,16 +31,16 @@ static bool checkNick(const std::string& nick) {
 	return true;
 }
 
-void    Server::handleNick(std::vector<std::string> args){
+void Server::handleNick(std::vector<std::string> args){
 	std::string client = _users[uf].getNick().empty() ? "*" : _users[uf].getNick();
-    if (args.empty()) {
-        sendResponse(":" + _hostname + " 431 " + client + " :No nickname given\r\n");
-        return;
-    }
-    if (args.size() != 1){
-        sendResponse(":" + _hostname + " 461 " + client + " NICK :Not enough parameters\r\n");
-        return;
-    }
+	if (args.empty()) {
+		sendResponse(":" + _hostname + " 431 " + client + " :No nickname given\r\n");
+		return;
+	}
+	if (args.size() != 1){
+		sendResponse(":" + _hostname + " 461 " + client + " NICK :Not enough parameters\r\n");
+		return;
+	}
 	if (!checkNick(args[0])) {
 		sendResponse(":" + _hostname + " 432 " + client + " " + args[0]
 			+ " :Erroneous nickname\r\n");
@@ -53,47 +53,31 @@ void    Server::handleNick(std::vector<std::string> args){
 			return;
 		}
 	}
-    std::string old = _users[uf].getFullId();
-    bool wasLogged = _users[uf].getLogged();
-    _users[uf].setNick(args[0]);
-    _users[uf].setGotNick();
-    if (wasLogged)
-        sendResponse(":" + old + " NICK :" + args[0] + "\r\n");
+	std::string old = _users[uf].getFullId();
+	bool wasLogged = _users[uf].getLogged();
+	_users[uf].setNick(args[0]);
+	_users[uf].setGotNick();
+	if (wasLogged)
+		sendResponse(":" + old + " NICK :" + args[0] + "\r\n");
 }
 
 void Server::handleUserName(std::vector<std::string> args) {
-    if (args.size() < 1) {
-        sendResponse(":" + _hostname + " 461 * USER :Not enough parameters\r\n");
-        return;
-    }
-    _users[uf].setUsername(args[0]);
-    _users[uf].setGotUsername();
+	if (args.size() < 1) {
+		sendResponse(":" + _hostname + " 461 * USER :Not enough parameters\r\n");
+		return;
+	}
+	_users[uf].setUsername(args[0]);
+	_users[uf].setGotUsername();
 }
 
-// void    Server::handleUserName(std::vector<std::string> args){
-//     if (args.size() != 1){
-//         sendResponse("Error: USER needs one argument only\r\n");
-//         return;
-//     }
-//     _users[uf].setUsername(args[0]);
-//     _users[uf].setGotUsername();
-// }
-
-// void    Server::registerAttempt(){
-//     if (_users[uf].getHasPass() && _users[uf].getHasNick() && _users[uf].getHasUsername()) {
-//         _users[uf].setLogged();
-//         sendResponse("Congrats you have logged in to this irc server!\r\n");
-//     }
-// }
-
 void Server::registerAttempt() {
-    User& u = _users[uf];
-    if (!u.getLogged() && u.getHasPass() && u.getHasNick() && u.getHasUsername()) {
-        u.setLogged();
-        std::string nick = u.getNick();
-        sendResponse(":" + _hostname + " 001 " + nick + " :Welcome to the IRC network, " + u.getFullId() + "\r\n");
-        sendResponse(":" + _hostname + " 002 " + nick + " :Your host is " + _hostname + "\r\n");
-        sendResponse(":" + _hostname + " 003 " + nick + " :This server was created today\r\n");
-        sendResponse(":" + _hostname + " 004 " + nick + " " + _hostname + " 1.0 o itkol\r\n");
-    }
+	User& u = _users[uf];
+	if (!u.getLogged() && u.getHasPass() && u.getHasNick() && u.getHasUsername()) {
+		u.setLogged();
+		std::string nick = u.getNick();
+		sendResponse(":" + _hostname + " 001 " + nick + " :Welcome to the IRC network, " + u.getFullId() + "\r\n");
+		sendResponse(":" + _hostname + " 002 " + nick + " :Your host is " + _hostname + "\r\n");
+		sendResponse(":" + _hostname + " 003 " + nick + " :This server was created today\r\n");
+		sendResponse(":" + _hostname + " 004 " + nick + " " + _hostname + " 1.0 o itkol\r\n");
+	}
 }

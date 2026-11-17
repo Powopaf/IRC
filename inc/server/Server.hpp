@@ -15,11 +15,9 @@
 
 class Server {
 private:
-	// CmdHandler					_commandHandler;
-
 	int							_port;
 	int							uf;
-	std::string 				_password;
+	std::string					_password;
 	int							_serverFd; // > listening socket
 	struct sockaddr_in			_serverAddress;
 	std::string					_hostname;
@@ -46,7 +44,7 @@ public:
 	User*						getUserP(int fd) { return &_users[fd]; };
 	int							findChannel(std::string name);
 	void						sendToChannel(Channel *ch, std::string response, User& excluded_sender);
-	Channel* 					getChannel(std::string& channel_name) const;
+	Channel*					getChannel(std::string& channel_name) const;
 	//Executing
 
 	void						handlePasswordAuth(std::vector<std::string> args); 
@@ -55,19 +53,19 @@ public:
 	void						registerAttempt();
 
 	//cmd
-	void invite(std::vector<std::string> args);
-	void kick(std::vector<std::string> args);
-	void mode(std::vector<std::string> args);
-	void topic(std::vector<std::string> args);
-	void join(std::vector<std::string> args);
-	void privmsg(std::vector<std::string> args);
-	void nick(std::vector<std::string> args);
+	void	invite(std::vector<std::string> args);
+	void	kick(std::vector<std::string> args);
+	void	mode(std::vector<std::string> args);
+	void	topic(std::vector<std::string> args);
+	void	join(std::vector<std::string> args);
+	void	privmsg(std::vector<std::string> args);
+	void	nick(std::vector<std::string> args);
 
-	void add_Channel(std::string name, User& ops);
-	void add_User_Channel(std::string channel, User& user);
-	void add_User_Channel(std::string channel, std::string pass, User& user);
+	void	add_Channel(std::string name, User& ops);
+	void	add_User_Channel(std::string channel, User& user);
+	void	add_User_Channel(std::string channel, std::string pass, User& user);
 
-	void broadcast(Channel& channel, std::string& msg);
-};	
+	void	broadcast(Channel& channel, std::string& msg);
+};
 
 #endif

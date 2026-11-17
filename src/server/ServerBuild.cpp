@@ -1,40 +1,35 @@
 #include "../../inc/server/Server.hpp"
 #include <iostream>
 #include <stdexcept>
-// #include <iostream>
-// #include <stdexcept>
-// #include <arpa/inet.h>
-// #include <unistd.h>
-// #include <poll.h>
 
 Server::Server(int port, std::string password) :_port(port), uf(0), _password(password) {//*_commandHandler(*this)*//
 	_serverFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverFd == -1)
-    	throw std::runtime_error("Error: Failed to create server socket");
+		throw std::runtime_error("Error: Failed to create server socket");
 
 	// REUSEADDR -> lets reuse a recently occupied port
 	int opt = 1;
-    setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
-    // address struct init
-    _serverAddress.sin_family = AF_INET; // -> ipv4
-    _serverAddress.sin_addr.s_addr = INADDR_ANY; // listen on all interfaces
+	// address struct init
+	_serverAddress.sin_family = AF_INET; // -> ipv4
+	_serverAddress.sin_addr.s_addr = INADDR_ANY; // listen on all interfaces
 	uint16_t net_port = htons(_port);
-    _serverAddress.sin_port = net_port;
+	_serverAddress.sin_port = net_port;
 
-    if (bind(_serverFd, (struct sockaddr *) &_serverAddress, sizeof(_serverAddress)) < 0) {
+	if (bind(_serverFd, (struct sockaddr *) &_serverAddress, sizeof(_serverAddress)) < 0) {
 		close(_serverFd);
 		throw std::runtime_error("Error: failed to bind the server socket");
-    }
+	}
 
 	// get hostname
 	socklen_t len = sizeof(_serverAddress);
 	if (getsockname(_serverFd, (struct sockaddr*)&_serverAddress, &len) == 0) {
-    	_hostname = inet_ntoa(_serverAddress.sin_addr);
+		_hostname = inet_ntoa(_serverAddress.sin_addr);
 	}
 
-    // listening; allowed 5 (doesnt matter which number)
-    if (listen(_serverFd, 5) < 0) {
+	// listening; allowed 5 (doesnt matter which number)
+	if (listen(_serverFd, 5) < 0) {
 		close(_serverFd);
 		throw std::runtime_error("Failed to listen on socket");
 	}
@@ -68,32 +63,3 @@ Server::~Server(void) {
 	if (_serverFd != -1)
 		close(_serverFd);
 }
-
-// void Server::shutdown(void) {
-// 	for (std::size_t i = 0; i < _channels.size(); ++i) {
-// 		delete _channels[i];
-// 	}
-// 	_channels.clear();
-// 	std::vector<Channel*>().swap(_channels);
-
-// 	for (std::size_t i = 0; i < _pollFds.size(); ++i)
-// 		close(_pollFds[i].fd);
-// 	_pollFds.clear();
-// 	std::vector<pollfd>().swap(_pollFds);
-
-// 	// std::map<int, User>::iterator it;
-// 	// for (it = _users.begin(); it != _users.end(); it++){
-// 	// 	i
-// 	for (std::map<int, User>::iterator it = _users.begin();
-// 		it != _users.end(); ++it) {
-// 		if (it->second.getFd() == uf) {
-// 			_users.erase(it);
-// 			break;
-// 		}
-// 	}
-// 	_users.clear();
-
-//     close (_serverFd);
-// }
-
-// Server::~Server(void) { close(_serverFd); }

@@ -59,14 +59,5 @@ void Server::privmsg(std::vector<std::string> args) {
 				sendResponse(":" + _hostname + " 401 " + _users[uf].getNick()
 					+ " " + target + " :No such nick/channel\r\n");
 		}
-		// else {
-		// 	std::map<int, User>::iterator it;
-		// 	for (it = _users.begin(); it != _users.end(); it++){
-		// 		if (it->second.getNick() == target){
-		// 			sendMessage(fullmsg, it->first);
-		// 			break;}
-		// 		if (it == _users.end())
-		// 			sendResponse(":" + _hostname + " 401 " + _users[uf].getNick() + " " + target + " :No such nick/channel\r\n");} 
-		// }
 	}
 }
