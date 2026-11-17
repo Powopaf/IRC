@@ -64,21 +64,48 @@ void Server::join(std::vector<std::string> args) {
 				+ " " + channels_name[i] + " :Cannot join channel (+k)\r\n");
 			return;
 		}
-		else if (_channels[a]->hasKey())
-			add_User_Channel(channels_name[i], keys[i], _users[uf]);
-		else
-			add_User_Channel(channels_name[i], _users[uf]);
+		else {
+			if (_channels[a]->isInviteOnly() && !_channels[a]->isInvited(_users[uf])) {
+				sendResponse(":" + _hostname + " 473 " + _users[uf].getNick()
+					+ " " + channels_name[i] + " :Cannot join channel (+i)\r\n");
+				continue;
+			}
+			if (_channels[a]->getLimit() > 0
+				&& _channels[a]->getMembers().size() >= _channels[a]->getLimit()) {
+				sendResponse(":" + _hostname + " 471 " + _users[uf].getNick()
+					+ " " + channels_name[i] + " :Cannot join channel (+l)\r\n");
+				continue;
+			}
+			if (_channels[a]->hasKey())
+				add_User_Channel(channels_name[i], keys[i], _users[uf]);
+			else
+				add_User_Channel(channels_name[i], _users[uf]);
+		}
 		std::string message = ":" + _users[uf].getFullId() + " JOIN :"
 			+ channels_name[i] + "\r\n";
 		int channel_index = exist(channels_name[i], _channels);
+		_channels[channel_index]->removeInvite(_users[uf]);
 		const std::vector<User *>& members = _channels[channel_index]->getMembers();
 		for (size_t member = 0; member < members.size(); member++)
 			sendMessage(message, members[member]->getFd());
-		if (_channels[i]->getTopic().empty())
+		if (_channels[channel_index]->getTopic().empty())
 			sendResponse(":" + _hostname + " 331 " + _users[uf].getNick()
-				+ " " + args[0] + " :No topic is set\r\n");
+				+ " " + channels_name[i] + " :No topic is set\r\n");
 		else
 			sendResponse(":" + _hostname + " 332 " + _users[uf].getNick()
-				+ " " + args[0] + " :" + _channels[i]->getTopic() + "\r\n");
+				+ " " + channels_name[i] + " :" + _channels[channel_index]->getTopic() + "\r\n");
+		std::string names;
+		const std::vector<User *>& joined_members = _channels[channel_index]->getMembers();
+		for (size_t member = 0; member < joined_members.size(); member++) {
+			if (!names.empty())
+				names += " ";
+			if (_channels[channel_index]->hasOperator(*joined_members[member]))
+				names += "@";
+			names += joined_members[member]->getNick();
+		}
+		sendResponse(":" + _hostname + " 353 " + _users[uf].getNick()
+			+ " = " + channels_name[i] + " :" + names + "\r\n");
+		sendResponse(":" + _hostname + " 366 " + _users[uf].getNick()
+			+ " " + channels_name[i] + " :End of /NAMES list.\r\n");
 	}
 }

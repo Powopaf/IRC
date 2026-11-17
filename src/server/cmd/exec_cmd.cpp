@@ -58,10 +58,10 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args, Serv
 		else if (cmd == "USER")
 			serv.handleUserName(args);
 		else if (cmd == "CAP") {
-    		if (!args.empty() && args[0] == "LS")
-        		serv.sendResponse(":" + serv.gethostname() + " CAP * LS :\r\n");
-    		else if (!args.empty() && args[0] == "REQ")
-        		serv.sendResponse(":" + serv.gethostname() + " CAP * NAK :" + (args.size() > 1 ? args[1] : "") + "\r\n");
+			if (!args.empty() && args[0] == "LS")
+				serv.sendResponse(":" + serv.gethostname() + " CAP * LS :\r\n");
+			else if (!args.empty() && args[0] == "REQ")
+				serv.sendResponse(":" + serv.gethostname() + " CAP * NAK :" + (args.size() > 1 ? args[1] : "") + "\r\n");
 		}
 		else
 			serv.sendResponse(":0.0.0.0 451 * :You have not registered\r\n");
@@ -84,28 +84,11 @@ static void exec_msg(const std::string& cmd, std::vector<std::string> args, Serv
 			serv.mode(args);
 		else if (cmd == "JOIN")
 			serv.join(args);
-		// else if (cmd == "PRIVMSG")
-		// 	serv.privmsg(args);
 		else if (cmd == "PING")
 			serv.sendResponse("PONG :" + serv.gethostname() + "\r\n");
 		else
 			throw std::invalid_argument("Command does not exist");
 }
-
-// TODO: add a try catch here
-
-// void Server::handleMessage() {
-// 	if (!_users[uf].hasCmd())
-// 		return;
-// 	std::string msg = _users[uf].getCmd();
-// 	size_t i = 0;
-// 	if (msg.size() > 512)
-// 		throw std::length_error("Message is too long");
-// 	std::string cmd = extract_cmd(msg, i);
-// 	std::vector<std::string> args = extract_args(msg, i);
-// 	std::cout << "Received data from fd " << uf << ": " << msg << std::endl;
-// 	exec_msg(cmd, args, *this);
-// }
 
 void Server::handleMessage() {
 	// Process every complete line currently sitting in this user's buffer.
