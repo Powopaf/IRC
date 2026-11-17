@@ -40,20 +40,33 @@ void Server::privmsg(std::vector<std::string> args) {
 				sendResponse(":" + _hostname + " 403 " + _users[uf].getNick() + " " + target + " :No such channel\r\n");
 			else {
 				if (!channel->isUserOnChannel(sender)){
-					sendResponse(":" + _hostname + " 442 " + _users[uf].getNick() + " : " + target + " :You're not on that channel\r\n");
+					sendResponse(":" + _hostname + " 442 " + _users[uf].getNick() + target + " :You're not on that channel\r\n");
 					return;
 				}
 				sendToChannel(channel, fullmsg, sender);
 			}
 		}
 		else {
-			std::map<int, User>::iterator it;
-			for (it = _users.begin(); it != _users.end(); it++){
-				if (it->second.getNick() == target){
+			bool found = false;
+			for (std::map<int, User>::iterator it = _users.begin(); it != _users.end(); ++it) {
+				if (it->second.getLogged() && it->second.getNick() == target) {
 					sendMessage(fullmsg, it->first);
-					break;}
-				if (it == _users.end())
-					sendResponse(":" + _hostname + " 401 " + _users[uf].getNick() + " " + target + " :No such nick/channel\r\n");} 
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				sendResponse(":" + _hostname + " 401 " + _users[uf].getNick()
+					+ " " + target + " :No such nick/channel\r\n");
 		}
+		// else {
+		// 	std::map<int, User>::iterator it;
+		// 	for (it = _users.begin(); it != _users.end(); it++){
+		// 		if (it->second.getNick() == target){
+		// 			sendMessage(fullmsg, it->first);
+		// 			break;}
+		// 		if (it == _users.end())
+		// 			sendResponse(":" + _hostname + " 401 " + _users[uf].getNick() + " " + target + " :No such nick/channel\r\n");} 
+		// }
 	}
 }
