@@ -38,6 +38,7 @@ void Server::invite(std::vector<std::string> args) {
 			+ " " + args[1] + " :You're not channel operator\r\n");
 		return;
 	}
+	channel->addInvite(*invitee);
 	sendResponse(":" + _hostname + " 341 " + inviter.getNick()
 		+ " " + args[0] + " " + args[1] + "\r\n");
 	sendMessage(":" + inviter.getFullId() + " INVITE " + args[0]

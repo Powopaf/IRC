@@ -19,8 +19,14 @@ Channel& Channel::operator=(const Channel& other) {
 	if (this == &other)
 		return *this;
 	this->_members = other._members;
+	this->_operators = other._operators;
+	this->_invited = other._invited;
 	this->_name = other._name;
+	this->_topic = other._topic;
 	this->_key = other._key;
+	this->_inviteOnly = other._inviteOnly;
+	this->_topicRestricted = other._topicRestricted;
+	this->_usersLimit = other._usersLimit;
 	return *this;
 }
 
@@ -54,6 +60,28 @@ void Channel::rmOps(std::string &nick) {
 			return;
 		}
 	}
+}
+
+void Channel::addInvite(User& user) {
+	if (!isInvited(user))
+		_invited.push_back(&user);
+}
+
+void Channel::removeInvite(User& user) {
+	for (std::vector<User *>::iterator it = _invited.begin(); it != _invited.end(); ++it) {
+		if (*it == &user) {
+			_invited.erase(it);
+			return;
+		}
+	}
+}
+
+bool Channel::isInvited(const User& user) const {
+	for (size_t i = 0; i < _invited.size(); i++) {
+		if (_invited[i]->getFd() == user.getFd())
+			return true;
+	}
+	return false;
 }
 
 void Channel::removeUser(User& user) {

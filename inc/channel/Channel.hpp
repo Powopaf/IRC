@@ -11,6 +11,7 @@ class Channel {
 		std::string _topic;
 		std::vector<User *> _members;
 		std::vector<User *> _operators;
+		std::vector<User *> _invited;
 		std::string _key;
 		bool _inviteOnly;
 		bool _topicRestricted;
@@ -26,6 +27,9 @@ class Channel {
 	void addOps(User& user);
 	void addOps(std::string& nick);
 	void rmOps(std::string& nick);
+	void addInvite(User& user);
+	void removeInvite(User& user);
+	bool isInvited(const User& user) const;
 	void removeUser(User& user);
 	bool isOps(User& user);
 

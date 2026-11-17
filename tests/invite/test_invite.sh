@@ -34,7 +34,18 @@ nc 127.0.0.1 "$port" <"$tmp/bob.in" >"$tmp/bob.out" & bob_pid=$!
 exec 4>"$tmp/bob.in"
 printf 'PASS testpass\r\nNICK Bob\r\nUSER bob 0 * :Bob\r\n' >&4
 wait_for "$tmp/bob.out" ' 001 Bob :Welcome'
+printf 'MODE #invite-test +i\r\n' >&3
+wait_for "$tmp/alice.out" ' MODE #invite-test +i'
+printf 'JOIN #invite-test\r\n' >&4
+wait_for "$tmp/bob.out" ' 473 Bob #invite-test :Cannot join channel (+i)'
 printf 'INVITE Bob #invite-test\r\n' >&3
 wait_for "$tmp/alice.out" ' 341 Alice Bob #invite-test'
 wait_for "$tmp/bob.out" ' INVITE Bob #invite-test'
-echo 'PASS: INVITE confirms and notifies the invitee'
+printf 'JOIN #invite-test\r\n' >&4
+wait_for "$tmp/bob.out" ' JOIN :#invite-test'
+wait_for "$tmp/bob.out" ' 353 Bob = #invite-test :@Alice Bob'
+printf 'JOIN #limit-test\r\nMODE #limit-test +l 1\r\n' >&3
+wait_for "$tmp/alice.out" ' MODE #limit-test +l 1'
+printf 'JOIN #limit-test\r\n' >&4
+wait_for "$tmp/bob.out" ' 471 Bob #limit-test :Cannot join channel (+l)'
+echo 'PASS: INVITE enforces +i and +l, and NAMES includes channel members'

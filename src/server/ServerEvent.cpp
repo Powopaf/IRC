@@ -35,6 +35,7 @@ void Server::handleDisconnection(void){
 
 void Server::_rmClient() {
 	for (std::size_t i = 0; i < _channels.size(); ++i) {
+		_channels[i]->removeInvite(_users[uf]);
 		for (std::size_t j = 0; j < _channels[i]->getMembers().size(); ++j) {
 			if (_channels[i]->getMembers()[j] == &_users[uf]) {
 				_channels[i]->removeUser(_users[uf]);
