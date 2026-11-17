@@ -99,6 +99,27 @@ static int apply(char m, bool add, std::string& p, Channel& ch) {
 	return err;
 }
 
+static std::string modeDescription(char m, bool add, const std::string& parameter) {
+	switch (m) {
+		case 'i':
+			return add ? "channel is now invite-only" : "channel is no longer invite-only";
+		case 't':
+			return add ? "only channel operators may change the topic"
+				: "topic changes are no longer restricted to channel operators";
+		case 'k':
+			return add ? "a channel key is now required to join"
+				: "the channel key has been removed";
+		case 'o':
+			return parameter + (add ? " is now a channel operator"
+				: " is no longer a channel operator");
+		case 'l':
+			return add ? "channel user limit is now " + parameter
+				: "channel user limit has been removed";
+		default:
+			return "";
+	}
+}
+
 void Server::mode(std::vector<std::string> args) {
 	if (args.size() < 1) {
 		sendResponse(":" + _hostname + " 461 " + _users[uf].getNick()
@@ -171,6 +192,12 @@ void Server::mode(std::vector<std::string> args) {
 						message += " " + parameter;
 					message += "\r\n";
 					broadcast(*_channels[ci], message);
+
+					std::string notice = ":" + _hostname + " NOTICE " + args[0]
+						+ " :" + _users[uf].getNick() + " changed mode "
+						+ (add ? "+" : "-") + std::string(1, m) + ": "
+						+ modeDescription(m, add, parameter) + "\r\n";
+					broadcast(*_channels[ci], notice);
 				}
 				break;
 		}
