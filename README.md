@@ -77,6 +77,26 @@ With Irssi, a typical connection can be made with:
 
 Individual tests are available under `tests/`.
 
+### Bot
+
+The example bot script requires the server port and password:
+
+```sh
+./bot.sh <port> <password>
+```
+
+For example:
+
+```sh
+./bot.sh 6667 testpass
+```
+
+The bot connects as `IRCBot`, creates or joins `#time`, sets the initial topic
+to the current time, and enables topic restriction with `MODE #time +t`. It
+sends the current time to the channel every 30 seconds, responds to IRC `PING`
+messages, and reconnects when the server is unavailable. The bot uses Bash and
+`nc`;
+
 ## Resources
 
 - [RFC 1459: Internet Relay Chat Protocol](https://www.rfc-editor.org/rfc/rfc1459)
