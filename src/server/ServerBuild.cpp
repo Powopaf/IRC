@@ -48,6 +48,7 @@ void Server::shutdown(void) {
 	for (std::size_t i = 0; i < _channels.size(); ++i)
 		delete _channels[i];
 	_channels.clear();
+	std::vector<Channel*>().swap(_channels);
 
 	// closes the listening socket AND every client socket (all are in _pollFds)
 	for (std::size_t i = 0; i < _pollFds.size(); ++i)
